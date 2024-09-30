@@ -31,7 +31,8 @@ export default async function Page() {
                         <CardWrapper />
                     </Suspense>
                 </div>
-                <div className="w-full">
+                <div className="w-full mt-8">
+                    <p>Revenue</p>
                     <Suspense fallback={<CardsSkeleton />}>
                         <AreaChartHero />
                     </Suspense>
