@@ -1,6 +1,5 @@
 'use client';
 
-import { CustomerField, InvoiceForm } from '@/lib/definitions';
 // import {
 //   CheckIcon,
 //   ClockIcon,
@@ -14,12 +13,13 @@ import { useFormState } from 'react-dom';
 import { Client, Invoice } from '@/types';
 import { Decimal128 } from 'mongoose';
 import { Schema } from 'mongoose';
+import { FetchInvoicesById } from '@/lib/data';
 
 export default function EditInvoiceForm({
   invoice,
   clients,
 }: {
-  invoice: Invoice;
+  invoice: FetchInvoicesById;
   clients: Client[];
 }) {
   const initialState = { message: '', errors: {} };

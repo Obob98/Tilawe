@@ -1,6 +1,8 @@
 
+import { CoinsIcons, GraphTimeSeries, TotalIcon, TimeGraph, ClockIcon } from '@/assets/SVGComponents';
 import { fetchCardData } from '@/lib/data';
 import { lusitana } from '@/ui/fonts';
+import clsx from 'clsx';
 
 export default async function CardWrapper() {
   const {
@@ -13,48 +15,65 @@ export default async function CardWrapper() {
   return (
     <>
 
-      <Card title="Collected" value={totalPaidInvoices} type="collected" />
-      <Card title="Pending" value={totalPendingInvoices} type="pending" />
-      {/* <Card title="Total Invoices" value={numberOfInvoices} type="invoices" />
-      <Card
-        title="Total Clients"
-        value={numberOfCustomers}
-        type="customers"
-      /> */}
+      <Card {...{ title: 'Weekly Sales', type: 'sales', cardData: [{ title: 'Total', figure: 'MK3,200,000.00', Icon: TimeGraph }, { title: 'Profit', figure: 'MK3,200,000.00', Icon: CoinsIcons }] }} />
+      <Card {...{ title: 'Invoices', type: 'invoices', cardData: [{ title: 'Collected', figure: 'MK3,200,000.00', Icon: TotalIcon }, { title: 'Pending', figure: 'MK3,200,000.00', Icon: ClockIcon }] }} />
+
     </>
   );
 }
 
 export function Card({
   title,
-  value,
+  subTitle,
   type,
+  cardData
 }: {
-  title: string;
-  value: number | string;
-  type: 'invoices' | 'customers' | 'pending' | 'collected';
+  title: string,
+  subTitle?: string | number,
+  type: 'invoices' | 'sales'
+  cardData: {
+    title: string,
+    figure: string,
+    Icon: ({ color }: {
+      color?: string | undefined
+    }) => JSX.Element,
+  }[]
 }) {
 
   return (
-    <div className=" rounded-xl bg-white p-2 shadow-sm">
-      <div className="flex p-4">
-        <h3 className="ml-2 text-sm font-medium">{title}</h3>
+    <div className="w-full rounded-xl bg-white p-2 shadow-sm border border-[#e0e0e0]">
+      <div className="flex p-4 ">
+        <h3 className="ml-2 font-bold uppercase">{title}</h3>
       </div>
       <div className='flex gap-4'>
-        <div className='truncate rounded-xl bg-gray-50 p-4 text-center'>
-          <p
-            className={`${lusitana.className} `}
-          >
-            {value}
-          </p>
-        </div>
-        <div className='gap-4 truncate rounded-xl bg-gray-50 p-4 text-center'>
-          <p
-            className={`${lusitana.className} `}
-          >
-            {value}
-          </p>
-        </div>
+        {
+          cardData.map(({ title, figure, Icon }, index) => (
+            <div
+              key={index}
+              className='flex-1 truncate rounded-xl border border-[#e0e0e0] p-4  space-y-6'
+            >
+              <div className='flex gap-16 justify-between items-center'>
+                <small>{title}</small>
+                <div
+                  className={clsx(
+                    'p-4 rounded-2xl',
+                    {
+                      'bg-green-200': index === 0,
+                      'bg-orange-200': index !== 0,
+                    }
+                  )}
+                >
+                  <Icon />
+                </div>
+              </div>
+              <p
+                className={` font-semibold`}
+              >
+                {figure}
+              </p>
+            </div>
+          ))
+        }
       </div>
     </div>
   );

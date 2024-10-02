@@ -5,10 +5,10 @@ import { AddIcon } from '@/assets/SVGComponents';
 export function CreateInvoice() {
   return (
     <Link
-      href="/dashboard/invoices/create"
-      className="flex gap-2 h-10 items-center rounded-md bg-primary py-6 px-4 text-sm font-medium text-white transition-colors hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+      href="/dashboard/create#createInvoice"
+      className="flex gap-2 h-10 items-center rounded-full bg-gray-50 hover:bg-gray-300 border border-gray-200 py-6 px-4 text-sm font-medium text-black transition-colors hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
     >
-      <AddIcon {...{ color: '#fff' }} />
+      <AddIcon {...{ width: '1.3em', }} />
       <span className="hidden md:block">Create Invoice</span>{' '}
     </Link>
   );

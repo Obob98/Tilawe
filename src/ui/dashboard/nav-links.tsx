@@ -34,9 +34,9 @@ export default function NavLinks({ links }: {
               }
             )}></div>
             <div className={clsx(
-              'w-full h-[48px] flex gap-2 items-center px-4 rounded-md',
+              'w-full h-[48px] flex gap-2 items-center px-4 rounded-md hover:bg-gray-100',
               {
-                'text-white bg-primary': pathname === link.href,
+                'text-white bg-primary hover:bg-primary': pathname === link.href,
               },
             )}>
               <link.icon {...{ color: pathname === link.href ? '#fff' : '#000' }} />

@@ -6,7 +6,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="w-full flex-none md:w-64">
                 <SideNav />
             </div>
-            <div className="flex-grow md:overflow-y-auto">
+            <div className="flex-grow md:overflow-y-auto relative">
                 {children}
             </div>
         </div>

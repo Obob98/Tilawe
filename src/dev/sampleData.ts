@@ -141,6 +141,18 @@ const invoices: Invoice[] = [
     },
     {
         client_id: "placeholder",
+        amount: 4000000,
+        due_date: new Date('Thur may 13 2023 17:05:00 GMT+0200 (Central Africa Time)'),
+        status: "paid"
+    },
+    {
+        client_id: "placeholder",
+        amount: 4800000,
+        due_date: new Date('Wed may 02 2022 16:05:00 GMT+0200 (Central Africa Time)'),
+        status: "pending"
+    },
+    {
+        client_id: "placeholder",
         amount: 43800000,
         due_date: new Date('Wed feb 26 2022 22:05:00 GMT+0200 (Central Africa Time)'),
         status: "paid"
@@ -201,11 +213,13 @@ const paymentMethods: PaymentMethod[] = [
 const products: Product[] = [
     {
         name: "Sausage",
-        type: "Meat Product"
+        type: "Meat Product",
+        price: 550000
     },
     {
         name: "Cooking Oil",
-        type: "Grocery"
+        type: "Grocery",
+        price: 610000
     }
 ]
 
@@ -285,7 +299,7 @@ const revenue: Revenue[] = [
     { month: 'Dec', revenue: 480000000 },
 ]
 
-export default {
+const sampleData = {
     branches,
     clients,
     employees,
@@ -302,3 +316,4 @@ export default {
     suppliers,
     revenue
 }
+export default sampleData

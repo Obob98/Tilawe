@@ -1,5 +1,5 @@
 // Tremor AreaChart [v0.3.1]
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// eslint-disable @typescript-eslint/no-explicit-any 
 
 "use client"
 
@@ -395,9 +395,11 @@ const ChartTooltip = ({
           // base
           "rounded-md border text-sm shadow-md",
           // border color
-          "border-gray-200 dark:border-gray-800",
+          "border-gray-200 ",
+          // "border-gray-200 dark:border-gray-800",
           // background color
-          "bg-white dark:bg-gray-950",
+          "bg-white",
+          // "bg-white dark:bg-gray-950",
         )}
       >
         <div className={cx("border-b border-inherit px-4 py-2")}>
@@ -406,7 +408,8 @@ const ChartTooltip = ({
               // base
               "font-medium",
               // text color
-              "text-gray-900 dark:text-gray-50",
+              "text-gray-900",
+              // "text-gray-900 dark:text-gray-50",
             )}
           >
             {label}
@@ -431,7 +434,8 @@ const ChartTooltip = ({
                     // base
                     "whitespace-nowrap text-right",
                     // text color
-                    "text-gray-700 dark:text-gray-300",
+                    "text-gray-700 ",
+                    // "text-gray-700 dark:text-gray-300",
                   )}
                 >
                   {category}
@@ -442,7 +446,8 @@ const ChartTooltip = ({
                   // base
                   "whitespace-nowrap text-right font-medium tabular-nums",
                   // text color
-                  "text-gray-900 dark:text-gray-50",
+                  "text-gray-900 ",
+                  // "text-gray-900 dark:text-gray-50",
                 )}
               >
                 {valueFormatter(value)}
@@ -671,7 +676,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
           >
             {showGridLines ? (
               <CartesianGrid
-                className={cx("stroke-gray-200 stroke-1 dark:stroke-gray-800")}
+                className={cx("stroke-gray-200 stroke-1 ")}
                 horizontal={true}
                 vertical={false}
               />
@@ -869,7 +874,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                       return (
                         <Dot
                           className={cx(
-                            "stroke-white dark:stroke-gray-950",
+                            "stroke-white ",
                             onValueChange ? "cursor-pointer" : "",
                             getColorClassName(
                               categoryColors.get(
@@ -923,7 +928,7 @@ const AreaChart = React.forwardRef<HTMLDivElement, AreaChartProps>(
                             strokeLinejoin={strokeLinejoin}
                             strokeWidth={strokeWidth}
                             className={cx(
-                              "stroke-white dark:stroke-gray-950",
+                              "stroke-white ",
                               onValueChange ? "cursor-pointer" : "",
                               getColorClassName(
                                 categoryColors.get(

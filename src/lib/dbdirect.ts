@@ -63,7 +63,9 @@ export async function fetchBranches(): Promise<Branch[]> {
         connectDB()
         const data: Branch[] = await BranchModel.find()
 
-        return data.map(({ branch_type, address, city }) => ({ branch_type, address, city }))
+        return data.map(({ _id, branch_type, address, city }) => (
+            { _id: _id?.toString(), branch_type, address, city }
+        ))
     } catch (error) {
         console.error('Database Error:', error);
         throw new Error('Failed to fetch revenue data.');
@@ -123,7 +125,7 @@ export async function fetchProducts(): Promise<Product[]> {
         connectDB()
         const data: Product[] = await ProductModel.find()
 
-        return data.map(({ name, type }) => ({ name, type }))
+        return data.map(({ name, type, price }) => ({ name, type, price }))
     } catch (error) {
         console.error('Database Error:', error);
         throw new Error('Failed to fetch revenue data.');

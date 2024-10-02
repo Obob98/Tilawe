@@ -8,6 +8,10 @@ const ProductSchema = new Schema({
     type: {
         type: String,
         required: [true, 'Please provide a product type']
+    },
+    price: {
+        type: Number,
+        required: [true, 'Please provide a product type']
     }
 }, { timestamps: true })
 

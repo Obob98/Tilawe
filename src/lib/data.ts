@@ -8,6 +8,7 @@ import connectDB from './db/config/connectDB'
 import InvoiceModel from './db/models/InvoiceModel'
 import ClientModel from './db/models/ClientModel'
 import { ObjectId } from 'mongodb'
+import { InventoryModel, ProductModel } from './db/models'
 
 export async function fetchRevenue(): Promise<Revenue[]> {
     noStore()
@@ -131,7 +132,7 @@ const isMonth = (query: string) => {
     return false
 }
 
-const ITEMS_PER_PAGE = 6
+const ITEMS_PER_PAGE = 8
 export async function fetchFilteredInvoices(
     query: string,
     currentPage: number,
@@ -206,6 +207,7 @@ export async function fetchFilteredInvoices(
     }
 }
 
+
 export async function fetchInvoicesPages(query: string) {
     noStore()
 
@@ -266,7 +268,7 @@ export async function fetchInvoicesPages(query: string) {
     }
 }
 
-export type FetchInvoicesPages = {
+export type FetchInvoicesById = {
     [K in keyof Invoice]: K extends 'client_id' ? Client : Invoice[K]
 }
 export async function fetchInvoiceById(id: string) {
@@ -280,7 +282,7 @@ export async function fetchInvoiceById(id: string) {
 
         const data = await InvoiceModel.findById(id).populate('client_id')
 
-        const invoice: FetchInvoicesPages = {
+        const invoice: FetchInvoicesById = {
             _id: data._id?.toString(),
             amount: data.amount / 100,
             client_id: {
@@ -304,62 +306,138 @@ export async function fetchInvoiceById(id: string) {
     }
 }
 
+export async function fetchFilteredInventory(
+    query: string,
+    currentPage: number,
+) {
+    noStore()
+
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE
+
+    try {
+        await connectDB()
+        await ProductModel.find()
+
+        const regex = new RegExp(query, 'i')
+
+        console.log({ regex })
+
+        // Build the search query with proper checks for different field types
+        const inventory = await InventoryModel.aggregate([
+            {
+                $lookup: {
+                    from: 'products',  // The name of the Client collection
+                    localField: 'product_id',
+                    foreignField: '_id',
+                    as: 'product_info'
+                }
+            },
+            { $unwind: '$product_info' },  // Unwind the client_info array
+            {
+                $addFields: {
+                    product_id: '$product_info'  // Replace client_id with the populated client_info
+                }
+            },
+            {
+                $match: {
+                    $or: [
+                        { 'product_id.name': { $regex: regex } },
+                        { 'product_id.type': { $regex: regex } },
+                        { 'product_id.price': { $regex: regex } },
+                        { quantity: { $regex: regex } }
+                    ]
+                }
+            },
+            { $sort: { quantity: -1 } },
+            { $skip: offset },
+            { $limit: ITEMS_PER_PAGE }
+        ]);
+
+        const formatedInventory = inventory.map((invoice) => {
+            return {
+                ...invoice,
+                _id: invoice?._id?.toString() || '',
+            }
+        })
+
+        console.log({ formatedInventory })
+
+        return deepClone(formatedInventory)
+    }
+    catch (error) {
+        console.error('Database Error:', error)
+        throw new Error('Failed to fetch Inventory.')
+    }
+}
+
+export async function fetchFilteredInventoryPages(
+    query: string,
+    currentPage: number,
+) {
+    noStore()
+
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE
+
+    try {
+        await connectDB()
+        await ProductModel.find()
+
+        const regex = new RegExp(query, 'i')
+        const regex2 = isMonth(query) ? new RegExp((monthNameToMonthIndex(query).toString()), 'i') : null
+
+        // Build the search query with proper checks for different field types
+        const totalDocuments = await InventoryModel.aggregate([
+            {
+                $lookup: {
+                    from: 'products',  // The name of the Client collection
+                    localField: 'product_id',
+                    foreignField: '_id',
+                    as: 'product_info'
+                }
+            },
+            { $unwind: '$product_info' },  // Unwind the client_info array
+            {
+                $addFields: {
+                    product_id: '$product_info'  // Replace client_id with the populated client_info
+                }
+            },
+            {
+                $match: {
+                    $or: [
+                        { 'product_id.name': { $regex: regex } },
+                        { 'product_id.type': { $regex: regex } },
+                        { 'product_id.price': { $regex: regex } },
+                    ]
+                }
+            },
+            { $count: 'total' }  // Instead of returning documents, just return the count
+        ]);
+
+        const totalResults = totalDocuments.length > 0 ? totalDocuments[0].total : 0;
+
+
+        const totalPages = Math.ceil(Number(totalResults) / ITEMS_PER_PAGE)
+
+        return totalPages
+    }
+    catch (error) {
+        console.error('Database Error:', error)
+        throw new Error('Failed to fetch invoices.')
+    }
+}
+
 export async function fetchClients() {
     noStore()
 
     try {
-        const data = await ClientModel.find()
+        const data: Client[] = await ClientModel.find()
 
-        return data
+        return data.map(({ _id, firstname, lastname, contact, email, address }) => (
+            { _id: _id?.toString(), firstname, lastname, contact, email, address }
+        ))
     } catch (err) {
         console.error('Database Error:', err)
         throw new Error('Failed to fetch all customers.')
     }
 }
 
-// export async function fetchFilteredCustomers(query: string) {
-//     noStore()
-
-//     try {
-//         const data = await sql<CustomersTableType>`
-// 		SELECT
-// 		  customers.id,
-// 		  customers.name,
-// 		  customers.email,
-// 		  customers.image_url,
-// 		  COUNT(invoices.id) AS total_invoices,
-// 		  SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-// 		  SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
-// 		FROM customers
-// 		LEFT JOIN invoices ON customers.id = invoices.customer_id
-// 		WHERE
-// 		  customers.name ILIKE ${`%${query}%`} OR
-//         customers.email ILIKE ${`%${query}%`}
-// 		GROUP BY customers.id, customers.name, customers.email, customers.image_url
-// 		ORDER BY customers.name ASC
-// 	  `
-
-//         const customers = data.rows.map((customer) => ({
-//             ...customer,
-//             total_pending: formatCurrency(customer.total_pending),
-//             total_paid: formatCurrency(customer.total_paid),
-//         }))
-
-//         return customers
-//     } catch (err) {
-//         console.error('Database Error:', err)
-//         throw new Error('Failed to fetch customer table.')
-//     }
-// }
-
-// export async function getUser(email: string) {
-//     noStore()
-
-//     try {
-//         const user = await sql`SELECT * FROM users WHERE email=${email}`
-//         return user.rows[0] as User
-//     } catch (error) {
-//         console.error('Failed to fetch user:', error)
-//         throw new Error('Failed to fetch user.')
-//     }
-// }

@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { generatePagination } from '@/lib/utils';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { Caret } from '@/assets/SVGComponents';
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
   const pathname = usePathname();
@@ -76,7 +77,7 @@ function PaginationNumber({
     {
       'rounded-l-md': position === 'first' || position === 'single',
       'rounded-r-md': position === 'last' || position === 'single',
-      'z-10 bg-primary border-red-400 text-white': isActive,
+      'z-10 bg-gray-200 border-gray-300 text-black': isActive,
       'hover:bg-gray-100': !isActive && position !== 'middle',
       'text-gray-300': position === 'middle',
     },
@@ -112,11 +113,9 @@ function PaginationArrow({
 
   const icon =
     direction === 'left' ? (
-      // <ArrowLeftIcon className="w-4" />
-      '<'
+      <Caret {...{ color: isDisabled ? '#909090' : '#000', styles: 'rotate-180' }} />
     ) : (
-      '>'
-      // <ArrowRightIcon className="w-4" />
+      <Caret {...{ color: isDisabled ? '#909090' : '#000' }} />
     );
 
   return isDisabled ? (

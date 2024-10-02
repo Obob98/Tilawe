@@ -44,7 +44,7 @@ export interface Inventory extends defs {
 export interface Invoice extends defs {
     client_id: string //ObjectId
     amount: number
-    due_date?: string
+    due_date?: string | Date
     status: 'paid' | 'pending'
 }
 
@@ -67,6 +67,7 @@ export interface Payment extends defs {
 export interface Product extends defs {
     name: string
     type: 'Meat Product' | 'Grocery'
+    price: number
 }
 
 export interface ProductSold extends defs {
