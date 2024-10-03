@@ -105,4 +105,9 @@ export interface Supplier extends defs {
     address?: string
 }
 
-export type TilaweDatabaseEntity = Branch | Client | Employee | Invoice | Inventory | Item | PaymentMethod | Payment | Product | ProductSold | PurchasedItem | PurchaseTransaction | Supplier | Revenue | SalesTransaction
+export interface Salary extends defs {
+    amount: number
+    grade: string
+}
+
+export type TilaweDatabaseEntity = Branch | Client | Employee | Invoice | Inventory | Item | PaymentMethod | Payment | Product | ProductSold | PurchasedItem | PurchaseTransaction | Supplier | Revenue | SalesTransaction | Salaries

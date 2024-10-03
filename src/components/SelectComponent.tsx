@@ -7,12 +7,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/Select"
+import { useEffect } from "react";
+
+const initialValue = ''
 
 export function SelectComponent(
     {
         data,
         defaultValue = '',
-        placeholder = 'Select'
+        placeholder = 'Select',
+        ...props
     }:
         {
             data: {
@@ -20,13 +24,14 @@ export function SelectComponent(
                 label: string;
             }[],
             defaultValue?: string,
-            placeholder?: string
+            placeholder?: string,
+            props?: any,
         }) {
 
 
     return (
         <>
-            <Select defaultValue={defaultValue}>
+            <Select defaultValue={defaultValue} {...{ ...props }}>
                 <SelectTrigger className="mx-auto">
                     <SelectValue placeholder={placeholder} />
                 </SelectTrigger>

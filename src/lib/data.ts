@@ -1,5 +1,6 @@
 import {
-    Branch, Client, Employee, Invoice, Inventory, Item, PaymentMethod, Payment, Product, ProductSold, PurchasedItem, PurchaseTransaction, Supplier, Revenue, SalesTransaction
+    Branch, Client, Employee, Invoice, Inventory, Item, PaymentMethod, Payment, Product, ProductSold, PurchasedItem, PurchaseTransaction, Supplier, Revenue, SalesTransaction,
+    Salary
 } from '@/types'
 import { deepClone, formatCurrency } from './utils'
 import { unstable_noStore as noStore } from 'next/cache'
@@ -9,6 +10,7 @@ import InvoiceModel from './db/models/InvoiceModel'
 import ClientModel from './db/models/ClientModel'
 import { ObjectId } from 'mongodb'
 import { InventoryModel, ProductModel } from './db/models'
+import SalaryModel from './db/models/SalaryModel'
 
 export async function fetchRevenue(): Promise<Revenue[]> {
     noStore()
@@ -440,4 +442,6 @@ export async function fetchClients() {
         throw new Error('Failed to fetch all customers.')
     }
 }
+
+
 

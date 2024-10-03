@@ -71,10 +71,10 @@ export default async function InvoicesTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Date
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
+                <th scope="col" className="px-3 py-5 font-medium text-center">
                   Status
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
+                <th scope="col" className="px-3 py-5 font-medium text-center">
                   Actions
                 </th>
               </tr>
@@ -111,7 +111,7 @@ export default async function InvoicesTable({
                   <td className="whitespace-nowrap px-3 py-3 bg-[#f5f6f9]">
                     {formatDateToLocal(invoice.due_date)}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3 bg-[#f5f6f9]">
+                  <td className="whitespace-nowrap px-3 py-3 bg-[#f5f6f9] grid place-content-center">
                     <InvoiceStatus status={invoice.status} />
                   </td>
                   <td className="whitespace-nowrap py-3 bg-[#f5f6f9] pl-6 pr-3">

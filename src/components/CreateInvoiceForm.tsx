@@ -1,43 +1,45 @@
 'use client';
 
 import Link from 'next/link';
-// import {
-//   CheckIcon,
-//   ClockIcon,
-//   CurrencyDollarIcon,
-//   UserCircleIcon,
-// } from '@heroicons/react/24/outline';
 import { Button } from '@/ui/button';
 import { createInvoice } from '@/lib/actions';
 import { useFormState } from 'react-dom';
 import { Client, Invoice } from '@/types';
-
-type InitialState = {
-    errors: {
-        customerId?: string[] | undefined;
-        amount?: string[] | undefined;
-        status?: string[] | undefined;
-    };
-    message: string;
-}
+import { useEffect, useRef } from 'react';
+import { useToast } from '@/lib/useToast';
+import { Toaster } from './Toaster';
+import CustomSelect from './CustomSelect';
 
 export default function CreateInvoiceForm({ Clients }: { Clients: Client[] }) {
-    const initialState: InitialState = { message: '', errors: {} };
+    const initialState = { message: '', errors: {} };
     const [state, dispatch] = useFormState(createInvoice, initialState);
+    const { toast } = useToast()
+
+    const formRef = useRef<HTMLFormElement | null>(null);
+
+    useEffect(() => {
+        if (state?.message && state.success) {
+            toast({
+                title: "Success",
+                description: state.message,
+                variant: "success",
+                duration: 10000,
+            })
+        }
+
+        if (formRef.current) {
+            formRef.current.reset();
+        }
+    }, [state])
 
     return (
-        <form action={dispatch}>
+        <form action={dispatch} ref={formRef} >
+            <Toaster />
             <div className="rounded-md bg-gray-50 border border-[#e0e0e0] p-4 md:p-6">
                 {/* Customer Name */}
                 <div className="mb-4">
                     <div className="relative">
-                        <select
-                            id="Client"
-                            name="customerId"
-                            className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 px-4 text-sm outline-2 placeholder:text-gray-500"
-                            defaultValue=""
-                            aria-describedby="Client-error"
-                        >
+                        <CustomSelect {...{ id: "Client", name: "customerId" }}>
                             <option value="" disabled>
                                 Select a Client
                             </option>
@@ -48,7 +50,7 @@ export default function CreateInvoiceForm({ Clients }: { Clients: Client[] }) {
                                     {Client.lastname}
                                 </option>
                             ))}
-                        </select>
+                        </CustomSelect>
                         {/* <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" /> */}
                     </div>
                     <div id="Client-error" aria-live="polite" aria-atomic="true">
@@ -71,10 +73,10 @@ export default function CreateInvoiceForm({ Clients }: { Clients: Client[] }) {
                                 type="number"
                                 step="0.01"
                                 placeholder="Enter MWK amount"
-                                className="peer block w-full rounded-md border border-gray-200 py-2 pl-12 text-sm outline-2 placeholder:text-gray-500"
+                                className="peer block w-full rounded-md border border-gray-300 py-2 pl-12 text-sm outline-2 placeholder:text-gray-500"
                                 aria-describedby="amount-error"
                             />
-                            <div className="pointer-events-none absolute left-3 top-1/2 h-fit w-[18px] -translate-y-1/2 text-gray-800 peer-focus:text-gray-900 flex gap-1 items-center">
+                            <div className="pointer-events-none absolute left-3 top-1/2 h-fit w-[18px] -translate-y-1/2 text-gray-400 peer-focus:text-gray-900 flex gap-1 items-center">
                                 <div>MK</div>
                                 <div>|</div>
                             </div>
@@ -95,7 +97,7 @@ export default function CreateInvoiceForm({ Clients }: { Clients: Client[] }) {
                     {/* <legend className="mb-2 block text-sm font-medium">
                         Set the invoice status
                     </legend> */}
-                    <div className="rounded-full border border-gray-200 bg-white px-[14px] py-3">
+                    <div className="rounded-full border border-gray-300 bg-white px-[14px] py-3">
                         <div className="flex gap-4">
                             <div className="flex items-center">
                                 <input
@@ -108,7 +110,7 @@ export default function CreateInvoiceForm({ Clients }: { Clients: Client[] }) {
                                 />
                                 <label
                                     htmlFor="pending"
-                                    className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
+                                    className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full border border-gray-300 bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                                 >
                                     Pending
                                     {/* <ClockIcon className="h-4 w-4" /> */}
@@ -120,11 +122,11 @@ export default function CreateInvoiceForm({ Clients }: { Clients: Client[] }) {
                                     name="status"
                                     type="radio"
                                     value="paid"
-                                    className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                                    className="h-4 w-4 cursor-pointer border border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                                 />
                                 <label
                                     htmlFor="paid"
-                                    className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
+                                    className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full border border-gray-300 bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                                 >
                                     Paid
                                     {/* <CheckIcon className="h-4 w-4" /> */}

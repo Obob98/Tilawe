@@ -8,7 +8,7 @@ import Link from 'next/link';
 //   UserCircleIcon,
 // } from '@heroicons/react/24/outline';
 import { Button } from '@/ui/button';
-import { createInvoice, State } from '@/lib/actions';
+import { createInvoice } from '@/lib/actions';
 import { useFormState } from 'react-dom';
 import { Client, Invoice } from '@/types';
 

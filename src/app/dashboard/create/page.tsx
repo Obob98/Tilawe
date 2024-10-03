@@ -9,7 +9,7 @@ import { Metadata } from 'next';
 import { fetchClients, fetchFilteredInventoryPages, fetchInvoicesPages } from '@/lib/data';
 import { SelectComponent } from '@/components/SelectComponent';
 import TabsComponent from '@/components/TabsComponent';
-import { fetchBranches } from '@/lib/dbdirect';
+import { fetchBranches, fetchImployees, fetchSalaries } from '@/lib/dbdirect';
 
 export const metadata: Metadata = {
     title: 'Invoices',
@@ -28,11 +28,13 @@ export default async function Create({
 
     const Clients = await fetchClients();
     const Branches = await fetchBranches();
+    const Salaries = await fetchSalaries();
+    const Employees = await fetchImployees()
 
     return (
         <div className="w-full">
             <div className="p">
-                <TabsComponent {...{ Clients, Branches }} />
+                <TabsComponent {...{ Clients, Branches, Salaries, Employees }} />
             </div>
         </div>
     );

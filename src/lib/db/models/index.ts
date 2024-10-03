@@ -1,6 +1,7 @@
 import RevenueModel from './RevenueModel';
 import InvoiceModel from './InvoiceModel';
 import BranchModel from './BranchModel';
+import SalaryModel from './SalaryModel';
 import ClientModel from './ClientModel';
 import ItemModel from './ItemModel';
 import PaymentModel from './PaymentModel';
@@ -19,6 +20,7 @@ export {
     RevenueModel,
     InvoiceModel,
     BranchModel,
+    SalaryModel,
     ClientModel,
     ItemModel,
     PaymentModel,

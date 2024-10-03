@@ -5,11 +5,11 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import InvoiceModel from './db/models/InvoiceModel'
 import { ObjectId } from 'mongodb'
-import { EmployeeModel } from './db/models'
+import { EmployeeModel, SalaryModel, SupplierModel } from './db/models'
 // import { signIn } from '@/auth'
 // import { AuthError } from 'next-auth'
 
-const FormSchema = z.object({
+const CreateInvoiceFormSchema = z.object({
     id: z.string(),
     customerId: z.string({
         invalid_type_error: 'Please select a customer.',
@@ -21,21 +21,8 @@ const FormSchema = z.object({
         invalid_type_error: 'Please select an invoice status.',
     }),
     date: z.string(),
-    firstName: z.string({
-        invalid_type_error: 'Please enter first name.',
-    })
-        .min(3, { message: 'First name must be at least 3 characters long.' })
-        .trim()
-    ,
-    lastName: z.string({
-        invalid_type_error: 'Please enter last name.',
-    })
-        .min(3, { message: 'Last name must be at least 3 characters long.' })
-        .trim(),
-    branchID: z.string({
-        invalid_type_error: 'Please select branch.',
-    }),
 })
+
 
 export type createInvoiceState = {
     errors?: {
@@ -46,7 +33,7 @@ export type createInvoiceState = {
     message?: string | null
 }
 
-const CreateInvoice = FormSchema.omit({ id: true, date: true, firstName: true, lastName: true, branchID: true })
+const CreateInvoice = CreateInvoiceFormSchema.omit({ id: true, date: true })
 export async function createInvoice(prevState: createInvoiceState, formData: FormData) {
     // Validate form using Zod
     const validatedFields = CreateInvoice.safeParse({
@@ -76,10 +63,10 @@ export async function createInvoice(prevState: createInvoiceState, formData: For
 
     // Revalidate the cache for the invoices page and redirect the user.
     revalidatePath('/dashboard/invoices')
-    redirect('/dashboard/invoices')
+    return { message: `successfully created invoice`, success: true }
 }
 
-const UpdateInvoice = FormSchema.omit({ id: true, date: true })
+const UpdateInvoice = CreateInvoiceFormSchema.omit({ id: true, date: true })
 export async function updateInvoice(
     id: string,
     due_date: string,
@@ -126,22 +113,49 @@ export async function deleteInvoice(id: string) {
     }
 }
 
+const CreateEmployeeFormSchema = z.object({
+    firstName: z.string({
+        invalid_type_error: 'Please enter first name.',
+    })
+        .min(3, { message: 'First name must be at least 3 characters long.' })
+        .trim()
+    ,
+    lastName: z.string({
+        invalid_type_error: 'Please enter last name.',
+    })
+        .min(3, { message: 'Last name must be at least 3 characters long.' })
+        .trim(),
+    salary: z.string({
+        invalid_type_error: 'Please select salary',
+    })
+        .trim(),
+    branchID: z.string({
+        invalid_type_error: 'Please select branch.',
+    }),
+    reportsTo: z.string({
+        invalid_type_error: 'Please select branch.',
+    }),
+})
+
 export type createEmployeeState = {
     errors?: {
         firstName?: string[]
         lastName?: string[]
         branchID?: string[]
+        salary?: string[]
+        reportsTo?: string[]
     }
     message?: string | null
 }
 
-const CreateEmployee = FormSchema.omit({ id: true, date: true, customerId: true, amount: true, status: true })
 export async function createEmployee(prevState: createEmployeeState, formData: FormData) {
     // Validate form using Zod
-    const validatedFields = CreateEmployee.safeParse({
+    const validatedFields = CreateEmployeeFormSchema.safeParse({
         firstName: formData.get('firstName'),
         lastName: formData.get('lastName'),
         branchID: formData.get('branchID'),
+        salary: formData.get('salary'),
+        reportsTo: formData.get('reportsTo'),
     })
 
     // If form validation fails, return errors early. Otherwise, continue.
@@ -153,17 +167,72 @@ export async function createEmployee(prevState: createEmployeeState, formData: F
     }
 
     // Prepare data for insertion into the database
-    const { firstName, lastName, branchID } = validatedFields.data
+    const { firstName, lastName, branchID, salary, reportsTo } = validatedFields.data
 
-    console.log({ firstName, lastName, branchID })
+    const { amount } = await SalaryModel.findById(new ObjectId(salary))
+    const salaryAmount = Number(amount)
 
-    const newEmployee = await EmployeeModel.create({ firstname: firstName, lastname: lastName, branch_id: new ObjectId(branchID), salary: 80000000 })
-    console.log({ newEmployee })
-
+    const newEmployee = await EmployeeModel.create({ firstname: firstName, lastname: lastName, branch_id: new ObjectId(branchID), salary: salaryAmount, reports_to: new ObjectId(reportsTo) })
 
     // Revalidate the cache for the invoices page and redirect the user.
-    revalidatePath('/dashboard/invoices')
-    redirect('/dashboard/invoices')
+    revalidatePath('/dashboard/create')
+    return { message: `added ${firstName} ${lastName} successfully`, success: true }
+}
+
+const CreateSupplierFormSchema = z.object({
+    name: z.string({
+        invalid_type_error: 'Please enter first name.',
+    })
+        .min(3, { message: 'Name must be at least 3 characters long.' })
+        .trim()
+    ,
+    contact: z.string({
+        invalid_type_error: 'Please enter contact.',
+    })
+        .min(8, { message: 'contact must be at least 8 characters long.' })
+        .trim()
+    ,
+    address: z.string({
+        invalid_type_error: 'Please enter address',
+    })
+        .min(6, { message: 'address info must be at least 6 characters long.' })
+        .trim()
+})
+
+export type createSupplierState = {
+    errors?: {
+        name?: string[]
+        contact?: string[]
+        address?: string[]
+    }
+    message?: string | null
+}
+
+export async function createSupplier(prevState: createSupplierState, formData: FormData) {
+    // Validate form using Zod
+    const validatedFields = CreateSupplierFormSchema.safeParse({
+        name: formData.get('name'),
+        contact: formData.get('contact'),
+        address: formData.get('address'),
+    })
+
+    // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to Create Invoice.',
+        }
+    }
+
+    // Prepare data for insertion into the database
+    const { name, contact, address } = validatedFields.data
+
+
+    const newSupplier = await SupplierModel.create({ name, contact, address })
+
+    // Revalidate the cache for the invoices page and redirect the user.
+    revalidatePath('/dashboard/create')
+    return { message: `added ${name} successfully`, success: true }
 }
 
 export async function authenticate(

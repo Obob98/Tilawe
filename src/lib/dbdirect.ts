@@ -13,7 +13,8 @@ import {
     PurchaseTransaction,
     Supplier,
     Revenue,
-    SalesTransaction
+    SalesTransaction,
+    Salary
 } from '@/types'
 import {
     RevenueModel,
@@ -30,7 +31,8 @@ import {
     ProductSoldModel,
     PurchasedItemsModel,
     PurchaseTransactionModel,
-    SalesTransactionModel
+    SalesTransactionModel,
+    SalaryModel
 } from './db/models';
 import { formatCurrency } from './utils';
 import connectDB from './db/config/connectDB';
@@ -170,7 +172,7 @@ export async function fetchImployees(): Promise<Employee[]> {
         connectDB()
         const data: Employee[] = await EmployeeModel.find()
 
-        return data.map(({ firstname, lastname, branch_id }) => ({ firstname, lastname, branch_id }))
+        return data.map(({ _id, firstname, lastname, branch_id }) => ({ _id: _id?.toString(), firstname, lastname, branch_id: branch_id.toString() }))
     } catch (error) {
         console.error('Database Error:', error);
         throw new Error('Failed to fetch revenue data.');
@@ -283,5 +285,27 @@ export async function fetchISalesTransactions(): Promise<FetchISalesTransactions
     } catch (error) {
         console.error('Database Error:', error);
         throw new Error('Failed to fetch revenue data.');
+    }
+}
+
+export type FetchSalariesReturnType = {
+    [K in keyof Salary]: K extends 'amount' ? string : Salary[K]
+}
+export async function fetchSalaries(): Promise<FetchSalariesReturnType[]> {
+    noStore()
+
+    try {
+        const data: Salary[] = await SalaryModel.find()
+
+        const salaries = data.map(({ _id, amount, grade }) => (
+            { _id: _id?.toString(), amount: formatCurrency(amount), grade }
+        ))
+
+        console.log(salaries)
+
+        return salaries
+    } catch (err) {
+        console.error('Database Error:', err)
+        throw new Error('Failed to fetch all customers.')
     }
 }

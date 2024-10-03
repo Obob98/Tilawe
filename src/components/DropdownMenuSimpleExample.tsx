@@ -50,8 +50,8 @@ export const DropdownMenuSimpleExample = ({ id }: { id: string }) => {
 export function DeleteInvoice({ id }: { id: string }) {
   const deleteInvoiceWithId = deleteInvoice.bind(null, id);
   return (
-    <form action={deleteInvoiceWithId}>
-      <button type="submit" >Delete</button>
+    <form action={deleteInvoiceWithId} className="w-full ">
+      <button type="submit" className=" w-full text-start">Delete</button>
     </form>
   )
 }

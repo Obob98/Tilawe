@@ -1,4 +1,4 @@
-import { Branch, Client, Employee, Inventory, Invoice, Item, Payment, PaymentMethod, Product, ProductSold, PurchasedItem, PurchaseTransaction, Revenue, SalesTransaction, Supplier } from "@/types";
+import { Branch, Client, Employee, Inventory, Invoice, Item, Payment, PaymentMethod, Product, ProductSold, PurchasedItem, PurchaseTransaction, Revenue, Salary, SalesTransaction, Supplier } from "@/types";
 
 const branches: Branch[] = [
     {
@@ -28,6 +28,33 @@ const branches: Branch[] = [
     },
 ]
 
+const salaries: Salary[] = [
+    {
+        amount: 15000000,
+        grade: 'grade 1'
+    },
+    {
+        amount: 28000000,
+        grade: 'grade 2'
+    },
+    {
+        amount: 35000000,
+        grade: 'grade 3'
+    },
+    {
+        amount: 50000000,
+        grade: 'grade 4'
+    },
+    {
+        amount: 75000000,
+        grade: 'grade 5'
+    },
+    {
+        amount: 125000000,
+        grade: 'grade 6'
+    }
+]
+
 const clients: Client[] = [
     {
         firstname: "Madaliso",
@@ -55,25 +82,21 @@ const employees: Employee[] = [
     {
         firstname: "Muhammed",
         lastname: "Yasid",
-        salary: 130000000,
         branch_id: 'placeholder'
     },
     {
         firstname: "Dave",
         lastname: "Bandawe",
-        salary: 30000000,
         branch_id: 'placeholder'
     },
     {
         firstname: "Maria",
         lastname: "magada",
-        salary: 80000000,
         branch_id: "placeholder"
     },
     {
         firstname: "Ester",
         lastname: "chiyenda",
-        salary: 12000000,
         branch_id: "placeholder"
     }
 ]
@@ -301,6 +324,7 @@ const revenue: Revenue[] = [
 
 const sampleData = {
     branches,
+    salaries,
     clients,
     employees,
     inventory,
