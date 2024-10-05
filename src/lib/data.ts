@@ -2,31 +2,41 @@ import {
     Branch, Client, Employee, Invoice, Inventory, Item, PaymentMethod, Payment, Product, ProductSold, PurchasedItem, PurchaseTransaction, Supplier, Revenue, SalesTransaction,
     Salary
 } from '@/types'
-import { deepClone, formatCurrency } from './utils'
+import { deepClone, formatCurrency, formatDateToLocal } from './utils'
 import { unstable_noStore as noStore } from 'next/cache'
-import RevenueModel from './db/models/RevenueModel'
-import connectDB from './db/config/connectDB'
-import InvoiceModel from './db/models/InvoiceModel'
-import ClientModel from './db/models/ClientModel'
+import RevenueModel from '../db/models/RevenueModel'
+import connectDB from '../db/config/connectDB'
+import InvoiceModel from '../db/models/InvoiceModel'
+import ClientModel from '../db/models/ClientModel'
 import { ObjectId } from 'mongodb'
-import { InventoryModel, ProductModel } from './db/models'
-import SalaryModel from './db/models/SalaryModel'
+import { InventoryModel, ProductModel } from '../db/models'
+import SalaryModel from '../db/models/SalaryModel'
 
-export async function fetchRevenue(): Promise<Revenue[]> {
+export type FetchRevenueReturnType = {
+    [K in keyof Revenue]: K extends 'revenue' ? string : Revenue[K]
+}
+export async function fetchRevenue(): Promise<FetchRevenueReturnType[]> {
     noStore()
 
     try {
         connectDB()
         const data: Revenue[] = await RevenueModel.find()
 
-        return data
+        return data.map(({ _id, month, revenue }) => (
+            {
+                _id: _id?.toString(),
+                // month: formatDateToLocal(month),
+                month,
+                revenue: formatCurrency(revenue)
+            }
+        ))
     } catch (error) {
         console.error('Database Error:', error)
         throw new Error('Failed to fetch revenue data.')
     }
 }
 
-type FetchLatestInvoicesReturnType = { amount: string, client: Client, status: "paid" | "pending" }
+export type FetchLatestInvoicesReturnType = { amount: string, client: Client, status: "paid" | "pending" }
 
 export type PopulatedInvoice = {
     [K in keyof Invoice]: K extends 'client_id' ? Client : Invoice[K]
@@ -209,7 +219,6 @@ export async function fetchFilteredInvoices(
     }
 }
 
-
 export async function fetchInvoicesPages(query: string) {
     noStore()
 
@@ -273,6 +282,7 @@ export async function fetchInvoicesPages(query: string) {
 export type FetchInvoicesById = {
     [K in keyof Invoice]: K extends 'client_id' ? Client : Invoice[K]
 }
+
 export async function fetchInvoiceById(id: string) {
     noStore()
 

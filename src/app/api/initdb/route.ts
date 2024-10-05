@@ -2,11 +2,11 @@ import { Model } from "mongoose";
 import { Decimal128, ObjectId } from 'mongodb'
 
 import sampleData from "@/dev/sampleData";
-import errorHandler from "@/middleware/errorHandler";
+import errorHandler from "@/lib/errorHandler";
 import { NextRequest, NextResponse } from "next/server";
 import { TilaweDatabaseEntity } from "@/types";
-import asyncHandler from "@/middleware/asyncHandler";
-import connectDB from "@/lib/db/config/connectDB";
+import asyncHandler from "@/lib/asyncHandler";
+import connectDB from "@/db/config/connectDB";
 import {
     RevenueModel,
     InvoiceModel,
@@ -24,7 +24,7 @@ import {
     PurchasedItemsModel,
     PurchaseTransactionModel,
     SalesTransactionModel
-} from '@/lib/db/models';
+} from '@/db/models';
 
 
 export async function GET(req: NextRequest) {

@@ -33,9 +33,9 @@ import {
     PurchaseTransactionModel,
     SalesTransactionModel,
     SalaryModel
-} from './db/models';
+} from '../db/models';
 import { formatCurrency } from './utils';
-import connectDB from './db/config/connectDB';
+import connectDB from '../db/config/connectDB';
 
 import { unstable_noStore as noStore } from 'next/cache';
 

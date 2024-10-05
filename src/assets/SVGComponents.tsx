@@ -3,7 +3,7 @@ export const Caret = ({ color = '#000', styles = '', width = "1em", height = wid
     <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
-        viewBox="0 0 24 24"
+        viewBox="0  0 24 24"
         width={width}
         height={height}
         className={`${styles}`}
@@ -20,16 +20,58 @@ export const Caret = ({ color = '#000', styles = '', width = "1em", height = wid
     </svg>
 )
 
-export const Elipsis = ({ color = "#000" }) => (
+export const DoubleCaret = ({ color = '#000', styles = '', width = "1em", height = width, strokeWidth = 1 }) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 16 16"
-        width="1em"
-        height="1em"
+        width={width}
+        height={height}
+        className={`${styles}`}
+        stroke={color}
+        strokeWidth={strokeWidth}
     >
-        <g fill={color}>
-            <path d="M8 12a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM8 6a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM10 2a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z" />
+        <path
+            fill="#000"
+            d="M8.55 2.24a.75.75 0 0 0-1.1 0L4.2 5.74a.75.75 0 1 0 1.1 1.02L8 3.852l2.7 2.908a.75.75 0 1 0 1.1-1.02l-3.25-3.5zm-1.1 11.52a.75.75 0 0 0 1.1 0l3.25-3.5a.75.75 0 1 0-1.1-1.02L8 12.148 5.3 9.24a.75.75 0 0 0-1.1 1.02l3.25 3.5z"
+        />
+    </svg>
+)
+
+export const Elipsis = ({ color = "#000", width = "2.5em", height = width, strokeWidth = 2 }) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        width={width}
+        height={height}
+    >
+        <g
+            stroke="#000"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2.2}
+        >
+            <path d="M12.005 16.005v-.01M12.005 12.005v-.01M12.005 8.005v-.01" />
+        </g>
+    </svg>
+)
+
+export const More = ({ color = "#000", width = "2.5em", height = width, strokeWidth = 2 }) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        width={width}
+        height={height}
+    >
+        <g
+            stroke="#000"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={strokeWidth}
+        >
+            <path d="M12.005 16.005v-.01M12.005 12.005v-.01M12.005 8.005v-.01" />
         </g>
     </svg>
 )
