@@ -1,11 +1,11 @@
 
-import { AreaChartHero } from '@/ui/dashboard/overview/components/AreaChartHero';
-import CardWrapper from '@/ui/dashboard/overview/components/cards';
-import { CardsSkeleton, LatestInvoicesSkeleton, RevenueChartSkeleton } from '@/ui/dashboard/components/skeletons';
+import { CardsSkeleton } from '@/ui/dashboard/components/skeletons';
 
 import { Suspense } from 'react';
 import { OverviewBarChart } from './components/OverviewBarChart';
 import { ProgressCards } from './components/ProgressCards';
+import { Card } from '@/tremorComponents/Card';
+import { SelectComponent } from '../components/SelectComponent';
 // import { fetchRevenue } from '@/lib/data';
 
 const chartdata = [
@@ -73,16 +73,26 @@ export default async function OverviewPage() {
     return (
         <main className='container max-w-[1120px]'>
             <div className='px-4 py-4'>
-                <div className="flex gap-4">
+                <Card className="flex gap-12 items-center justify-start p-4 px-8  sticky top-0 z-40">
+                    {/* <h1 className={`${lusitana.className} text-2xl font-bold`}>Inventory</h1> */}
+                    <div className="max-w-40">
+                        <SelectComponent {...{ data: [], placeholder: 'Select Filter' }} />
+                    </div>
+                    <div className="max-w-40">
+                        <SelectComponent {...{ data: [], placeholder: 'Select Filter' }} />
+                    </div>
+                    <div className="max-w-40">
+                        <SelectComponent {...{ data: [], placeholder: 'Select Filter' }} />
+                    </div>
+                </Card>
+                <div className="flex gap-4 mt-4">
                     <Suspense fallback={<CardsSkeleton />}>
-                        {/* <CardWrapper /> */}
                         <ProgressCards />
                     </Suspense>
                 </div>
                 <div className="w-full mt-4 bg-white shadow-sm p-8 rounded-lg border border-[#e0e0e0]">
                     <p>Revenue</p>
                     <Suspense fallback={<CardsSkeleton />}>
-                        {/* <AreaChartHero /> */}
                         <OverviewBarChart {...{ chartdata }} />
                     </Suspense>
                 </div>

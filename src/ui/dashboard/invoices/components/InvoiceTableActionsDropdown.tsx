@@ -25,26 +25,26 @@ export default function InvoiceTableActionsDropdown({ id }: { id: string }) {
     <div className={cx("w-fit flex items-center justify-start")}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          < div className="cursor-pointer" >
+          < button className="cursor-pointer" >
             <Elipsis />
-          </div>
+          </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
 
           <DropdownMenuGroup>
-            <DropdownMenuItem >
-              <Link
-                href={`/dashboard/invoices/${id}/edit`}
-                className="w-full  flex items-center gap-x-1 justify-between">
+            <Link
+              href={`/dashboard/invoices/${id}/edit`}
+              className="w-full">
+              <DropdownMenuItem className="w-full flex items-center gap-x-1 justify-between" >
                 Update Invoice
                 <DropdownMenuIconWrapper>
                   <RiEdit2Line className="size-4 text-inherit" />
                 </DropdownMenuIconWrapper>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem >
+              </DropdownMenuItem>
+            </Link>
+            <DropdownMenuItem onClick={e => e.stopPropagation()} >
               <span className="w-full  flex items-center gap-x-1 justify-between">
                 <DeleteInvoice {...{ id }} />
                 <DropdownMenuIconWrapper>
