@@ -1,4 +1,4 @@
-import { Branch, Client, Employee, Inventory, Invoice, Item, Payment, PaymentMethod, Product, ProductSold, PurchasedItem, PurchaseTransaction, Revenue, Salary, SalesTransaction, Supplier } from "@/types";
+import { Branch, Client, Employee, Inventory, Invoice, Item, Payment, PaymentMethod, Product, ProductSold, PurchasedItem, PurchaseTransaction, Revenue, Salary, SalesTransaction, Supplier, UserRole } from "@/types";
 
 const branches: Branch[] = [
     {
@@ -82,24 +82,59 @@ const employees: Employee[] = [
     {
         firstname: "Muhammed",
         lastname: "Yasid",
+        email: "muhammed@gmail.com",
         branch_id: 'placeholder'
     },
     {
         firstname: "Dave",
         lastname: "Bandawe",
+        email: "dave@gmail.com",
         branch_id: 'placeholder'
     },
     {
         firstname: "Maria",
         lastname: "magada",
+        email: "maria@gmail.com",
         branch_id: "placeholder"
     },
     {
         firstname: "Ester",
         lastname: "chiyenda",
+        email: "ester@gmail.com",
+        branch_id: "placeholder"
+    },
+    {
+        firstname: "Mayamiko",
+        lastname: "Mchere",
+        email: "mayamiko@gmail.com",
+        branch_id: "placeholder"
+    },
+    {
+        firstname: "Mphatso",
+        lastname: "Tambala",
+        email: "mphatso@gmail.com",
         branch_id: "placeholder"
     }
 ]
+
+const UserRoles: UserRole[] = [
+    {
+        role: "Company Manager"
+    },
+    {
+        role: "Admin"
+    },
+    {
+        role: "Supply Chain Manager"
+    },
+    {
+        role: "Branch Manager"
+    },
+    {
+        role: "Procurement Manager"
+    },
+]
+
 
 const inventory: Inventory[] = [
     {
@@ -338,6 +373,7 @@ const sampleData = {
     purchasedItems,
     purchaseTransactions,
     suppliers,
-    revenue
+    revenue,
+    UserRoles
 }
 export default sampleData

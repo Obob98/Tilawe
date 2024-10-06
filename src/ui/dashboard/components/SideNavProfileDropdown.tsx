@@ -22,11 +22,16 @@ import { deleteInvoice } from "@/actions/invoiceActions"
 import { RiMore2Line, RiLogoutBoxLine, RiColorFilterLine, RiSunLine, RiMoonLine, RiComputerLine } from "@remixicon/react";
 import { useState } from "react"
 import { DoubleCaret } from "@/assets/SVGComponents"
-import { signOut } from "next-auth/react"
+import { useRouter } from 'next/navigation'
+import { signOut, useSession } from 'next-auth/react'
 
 export default function SideNavProfileDropdown() {
   const [sort, setSort] = useState("alpha")
 
+  const { data: session, status } = useSession()
+  const router = useRouter()
+
+  const user: any = session?.user
 
   return (
     <div className={cx("w-full md:flex items-center justify-start hidden")}>
@@ -35,7 +40,7 @@ export default function SideNavProfileDropdown() {
           <button className='w-full gap-4 flex items-center justify-between px-4 py-4 border-t border-t-[#e0e0e0] hover:bg-gray-100'
           >
             <div className='w-10 h-10 rounded-full bg-slate-200 grid place-content-center'>UN</div>
-            <p className='flex-1 text-left'>User Name</p>
+            <p className='flex-1 text-left'>{user.username}</p>
 
             <DoubleCaret {...{ strokeWidth: 0.1 }} />
           </button>

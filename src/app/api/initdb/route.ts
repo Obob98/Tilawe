@@ -1,10 +1,11 @@
 import { Model } from "mongoose";
 import { Decimal128, ObjectId } from 'mongodb'
+import bcrypt from "bcryptjs"
 
 import sampleData from "@/dev/sampleData";
 import errorHandler from "@/lib/errorHandler";
 import { NextRequest, NextResponse } from "next/server";
-import { TilaweDatabaseEntity } from "@/types";
+import { Employee, TilaweDatabaseEntity } from "@/types";
 import asyncHandler from "@/lib/asyncHandler";
 import connectDB from "@/db/config/connectDB";
 import {
@@ -23,8 +24,10 @@ import {
     ProductSoldModel,
     PurchasedItemsModel,
     PurchaseTransactionModel,
-    SalesTransactionModel
+    SalesTransactionModel,
+    UserRoleModel
 } from '@/db/models';
+import UserModel from "@/db/models/UserModel";
 
 
 export async function GET(req: NextRequest) {
@@ -69,6 +72,7 @@ export async function POST(req: NextRequest) {
 }
 
 async function SeedDataBase() {
+    await populateUserRoles()
     await populateRevenue()
     await populateBranches()
     await populateSalaries()
@@ -89,7 +93,7 @@ async function SeedDataBase() {
     return true
 }
 
-const { branches, salaries, clients, employees, inventory, invoices, items, payments, paymentMethods, products, productsSold, purchasedItems, salesTransactions, purchaseTransactions, suppliers, revenue
+const { branches, salaries, clients, employees, inventory, invoices, items, payments, paymentMethods, products, productsSold, purchasedItems, salesTransactions, purchaseTransactions, suppliers, revenue, UserRoles
 } = sampleData
 
 async function populateRevenue() {
@@ -118,6 +122,12 @@ async function populateClients() {
 
 async function populateSuppliers() {
     const data = await SupplierModel.insertMany(suppliers)
+
+    return data
+}
+
+async function populateUserRoles() {
+    const data = await UserRoleModel.insertMany(UserRoles)
 
     return data
 }
@@ -256,18 +266,37 @@ async function populatePayments() {
 
 async function populateEmployees() {
     let data = []
+    const UserRoles = await UserRoleModel.find()
+
+    let i = 0
     for (let employee of employees) {
 
-        const { firstname, lastname, job_title } = employee
+        const { firstname, lastname, email } = employee
 
         const branch_id = await randomID(BranchModel)
 
-        const newEmployee = { firstname, lastname, job_title, branch_id }
+        type SchemaEmployeeType = {
+            [K in keyof Employee]: K extends "branch_id" ? ObjectId : Employee[K]
+        }
+        const newEmployee: SchemaEmployeeType = { firstname, lastname, email, branch_id: branch_id as ObjectId }
 
+        const hashedPassword = await bcrypt.hash("1234", 10)
+
+        if (i < UserRoles.length) {
+            await UserModel.create({
+                username: firstname + ' ' + lastname,
+                email,
+                password: hashedPassword,
+                role: UserRoles[i]._id
+            })
+
+            newEmployee.job_title = UserRoles[i]._id
+        }
 
         const res = await EmployeeModel.create(newEmployee)
 
         data.push(res)
+        i++
     }
 
     return data
