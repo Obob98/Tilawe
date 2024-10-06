@@ -5,12 +5,12 @@ import {
 import { deepClone, formatCurrency, formatDateToLocal } from './utils'
 import { unstable_noStore as noStore } from 'next/cache'
 import RevenueModel from '../db/models/RevenueModel'
-import connectDB from '../db/config/connectDB'
 import InvoiceModel from '../db/models/InvoiceModel'
 import ClientModel from '../db/models/ClientModel'
 import { ObjectId } from 'mongodb'
 import { InventoryModel, ProductModel } from '../db/models'
 import SalaryModel from '../db/models/SalaryModel'
+import connectDB from '../db/config/connectDB'
 
 export type FetchRevenueReturnType = {
     [K in keyof Revenue]: K extends 'revenue' ? string : Revenue[K]
@@ -442,6 +442,7 @@ export async function fetchClients() {
     noStore()
 
     try {
+        connectDB()
         const data: Client[] = await ClientModel.find()
 
         return data.map(({ _id, firstname, lastname, contact, email, address }) => (
