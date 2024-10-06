@@ -1,83 +1,81 @@
 'use client';
 
-import { lusitana } from '@/assets/fonts';
-// import { Button } from './button';
+import { useState } from 'react'
+import { signIn } from 'next-auth/react'
+import { Button } from '@/tremorComponents/Button'
 import { useFormState, useFormStatus } from 'react-dom';
+import { cx } from '@/lib/utils';
 // import { authenticate } from '@/actions/invoiceActions';
 
 export default function LoginForm() {
-  // const [errorMessage, dispatch] = useFormState(authenticate, undefined);
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  // const router = useRouter()
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    setIsSubmitting(true)
+
+    // Call NextAuth signIn method with credentials
+    const res = await signIn('credentials', {
+      redirect: false, // Prevent auto-redirect
+      email,
+      password
+    })
+
+    if (res?.error) {
+      setError('Invalid email or password')
+      setIsSubmitting(false)
+    } else {
+      // Redirect on successful login
+      // router.push('/dashboard')
+      console.log({ res })
+      setIsSubmitting(false)
+      window.location.href = '/dashboard'
+    }
+  }
+
   return (
-    // <form action={dispatch} className="space-y-3">
-    <form className="space-y-3">
-      {/* <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Please log in to continue.
-        </h1>
-        <div className="w-full">
-          <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="email"
-                type="email"
-                name="email"
-                placeholder="Enter your email address"
-                required
-              />
-            </div>
-          </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="password"
-                type="password"
-                name="password"
-                placeholder="Enter password"
-                required
-                minLength={6}
-              />
-            </div>
-          </div>
+    <main className='w-fit h-screen grid place-content-center' >
+      {error && <p style={{ color: 'red' }}> {error} </p>
+      }
+      <form onSubmit={handleSubmit} className='w-[400px] flex flex-col gap-8' >
+        <div className='w-full' >
+          <input
+            type="email"
+            placeholder='email'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className='p-4 border border-[#e0e0e0] w-full rounded-md'
+          />
         </div>
-        <LoginButton />
-        <div
-          className="flex h-8 items-end space-x-1"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {errorMessage && (
-            <>
-            <p className="text-sm text-red-500">{errorMessage}</p>
-            </>
-            )}
+        < div className='w-full' >
+          <input
+            type="password"
+            placeholder='password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className='p-4 border border-[#e0e0e0] w-full rounded-md'
+          />
         </div>
-      </div> */}
-      <a href="/dashboard">Skip Login</a>
-    </form>
-  );
+        <LoginButton {...{ isSubmitting }} />
+      </form>
+    </main>
+  )
 }
 
-function LoginButton() {
-  const { pending } = useFormStatus();
+function LoginButton({ isSubmitting }: { isSubmitting: boolean }) {
 
   return (
-    <></>
-    // <Button className="mt-4 w-full" aria-disabled={pending}>
-    //   Log in
-    // </Button>
+    <Button
+      className={cx("p-4 bg-primary text-white rounded-md", isSubmitting && 'opacity-50')}
+      aria-disabled={isSubmitting} disabled={isSubmitting}>
+      Log in
+    </Button>
   );
 }

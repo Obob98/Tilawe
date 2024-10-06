@@ -1,20 +1,25 @@
 
-// import LoginForm from '@/pages/dashboard/components/login-form';
+import { getServerSession } from 'next-auth'
 import { Metadata } from 'next';
-import Link from 'next/link';
+import { redirect } from 'next/navigation'
+
+import LoginForm from '@/ui/dashboard/components/login-form';
 
 export const metadata: Metadata = {
   title: 'Login',
 };
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const session = await getServerSession()
+
+  if (session) {
+    redirect("/dashboard")
+  }
+
   return (
     <main className="flex items-center justify-center md:h-screen">
       <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
-        <div className="flex h-20 w-full items-end rounded-lg bg-red-500 p-3 md:h-36">
-        </div>
-        <Link href={'/dashboard'}>dashboard</Link>
-        {/* <LoginForm /> */}
+        <LoginForm />
       </div>
     </main>
   );

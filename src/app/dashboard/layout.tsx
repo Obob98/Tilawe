@@ -1,14 +1,19 @@
+import { getServerSession } from "next-auth"
 import SideNav from '@/ui/dashboard/components/sidenav';
+import SessionProvivider from '@/context/SessionProvider'
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+    const session = await getServerSession()
     return (
-        <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
-            <div className="w-full flex-none md:w-64">
-                <SideNav />
+        <SessionProvivider session={session}>
+            <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+                <div className="w-full flex-none md:w-64">
+                    <SideNav />
+                </div>
+                <div className="flex-grow md:overflow-y-auto relative">
+                    {children}
+                </div>
             </div>
-            <div className="flex-grow md:overflow-y-auto relative">
-                {children}
-            </div>
-        </div>
+        </SessionProvivider>
     );
 }

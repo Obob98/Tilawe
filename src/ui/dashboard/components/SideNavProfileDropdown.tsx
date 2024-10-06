@@ -22,6 +22,7 @@ import { deleteInvoice } from "@/actions/invoiceActions"
 import { RiMore2Line, RiLogoutBoxLine, RiColorFilterLine, RiSunLine, RiMoonLine, RiComputerLine } from "@remixicon/react";
 import { useState } from "react"
 import { DoubleCaret } from "@/assets/SVGComponents"
+import { signOut } from "next-auth/react"
 
 export default function SideNavProfileDropdown() {
   const [sort, setSort] = useState("alpha")
@@ -78,7 +79,7 @@ export default function SideNavProfileDropdown() {
             <DropdownMenuItem >
               <span className="flex items-center gap-x-2">
                 <RiLogoutBoxLine className="size-4 text-inherit" />
-                <span>Sign out</span>
+                <button onClick={() => signOut()}>Sign out</button>
               </span>
             </DropdownMenuItem>
           </DropdownMenuGroup>
