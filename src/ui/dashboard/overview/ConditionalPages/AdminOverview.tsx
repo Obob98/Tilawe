@@ -6,42 +6,35 @@ import { OverviewBarChart } from '@/ui/dashboard/overview/components/OverviewBar
 import { ProgressCards } from '@/ui/dashboard/overview/components/ProgressCards';
 import { Card } from '@/tremorComponents/Card';
 import { SelectComponent } from '@/ui/dashboard/components/SelectComponent';
-import { fetchCardData, fetchCities } from '@/lib/data';
+import { fetchAdminAnalytics, fetchCardData, fetchCities } from '@/lib/data';
 import { fetchRevenue } from '@/lib/data';
 import { Revenue } from '@/types';
 import { formatCurrency } from '@/lib/utils';
 import { fetchBranches } from '@/lib/dbdirect';
+import { AdminTrackerChart } from '../components/AdminTrackerChart';
 
 export default async function AdminOverview() {
     // return <p>Admin Overview</p>
-    let data = await fetchCardData()
+    let { totalBranches, paymentMethods, totalEmployees, totalUsers } = await fetchAdminAnalytics()
 
     const cardData = [
         {
-            cardTitle: "Invoices Collected",
-            percentValue: data.paidPercentage,
-            numalator: data.totalPaidInvoices,
-            denominator: data.total
+            cardTitle: "totalUsers",
+            numalator: totalUsers,
         },
         {
-            cardTitle: "Invoices Pending",
-            percentValue: data.pendingPercentage,
-            numalator: data.totalPendingInvoices,
-            denominator: data.total,
-            invert: true
+            cardTitle: "totalBranches",
+            numalator: totalBranches,
         },
         {
-            cardTitle: "Profit Margin",
-            percentValue: 20,
-            numalator: formatCurrency(2000000000),
-            denominator: formatCurrency(10000000000),
-            fair: true
+            cardTitle: "payment Methods",
+            numalator: paymentMethods,
+        },
+        {
+            cardTitle: "totalEmployees",
+            numalator: totalEmployees,
         },
     ]
-
-    const revenue = await fetchRevenue()
-    const chartdata = transformData(revenue)
-
 
     let cities = await fetchCities()
     cities = cities.map(city => (
@@ -80,43 +73,12 @@ export default async function AdminOverview() {
                     </Suspense>
                 </div>
                 <div className="w-full mt-4 bg-white shadow-sm p-8 rounded-lg border border-[#e0e0e0]">
-                    <p>Revenue</p>
+                    <p className='pb-8'>Systmem Perfomance</p>
                     <Suspense fallback={<CardsSkeleton />}>
-                        <OverviewBarChart {...{ chartdata }} />
+                        <AdminTrackerChart />
                     </Suspense>
                 </div>
             </div>
         </main >
     )
 }
-
-const transformData = (data: Revenue[]) => {
-    const transformedData = []
-
-    let i = 0
-    while (data.length) {
-        if (i >= 50) return []
-
-        const revenue = {
-            date: "",
-            Lilongwe: 0,
-            Blantyre: 0,
-            Mzuzu: 0,
-        }
-
-        const [LilongweData, BlantyreData, MzuzuData] = data.splice(0, 3)
-
-        revenue.date = LilongweData.month
-        revenue.Lilongwe = LilongweData.revenue
-        revenue.Blantyre = BlantyreData.revenue
-        revenue.Mzuzu = MzuzuData.revenue
-
-        transformedData.push(revenue)
-
-        i++
-    }
-
-    return transformedData
-}
-
-

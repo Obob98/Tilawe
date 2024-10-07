@@ -7,7 +7,6 @@ export const CEOAnalyticsLinks = [
         href: '/dashboard/invoices',
         icon: InvoiceIcon,
     },
-    { name: 'Inventory', href: '/dashboard/inventory', icon: InventoryIcon },
 ];
 
 export const CEOWorksSpaceLinks = [
@@ -30,7 +29,7 @@ export const adminworksSpaceLinks = [
     { name: 'Notifications', href: '/dashboard/notifications', icon: NotificationIcon },
 ];
 
-export const analyticsLinks = [
+export const BranchManagerAnalyticsLinks = [
     { name: 'Analytics', href: '/dashboard', icon: OverviewIcon },
     {
         name: 'Invoices',
@@ -40,7 +39,7 @@ export const analyticsLinks = [
     { name: 'Inventory', href: '/dashboard/inventory', icon: InventoryIcon },
 ];
 
-export const worksSpaceLinks = [
+export const BranchManagerWorksSpaceLinks = [
     { name: 'Create', href: '/dashboard/create', icon: AddIcon },
     { name: 'Notifications', href: '/dashboard/notifications', icon: NotificationIcon },
 ];

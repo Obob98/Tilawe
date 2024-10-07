@@ -17,6 +17,11 @@ const CreateEmployeeFormSchema = z.object({
     })
         .min(3, { message: 'Last name must be at least 3 characters long.' })
         .trim(),
+    email: z.string({
+        invalid_type_error: 'Please enter your email.',
+    })
+        .min(3, { message: 'Last name must be at least 3 characters long.' })
+        .trim(),
     salary: z.string({
         invalid_type_error: 'Please select salary',
     })
@@ -33,6 +38,7 @@ export type createEmployeeState = {
     errors?: {
         firstName?: string[]
         lastName?: string[]
+        email?: string[]
         branchID?: string[]
         salary?: string[]
         reportsTo?: string[]
@@ -45,6 +51,7 @@ export async function createEmployee(prevState: createEmployeeState, formData: F
     const validatedFields = CreateEmployeeFormSchema.safeParse({
         firstName: formData.get('firstName'),
         lastName: formData.get('lastName'),
+        email: formData.get('email'),
         branchID: formData.get('branchID'),
         salary: formData.get('salary'),
         reportsTo: formData.get('reportsTo'),
@@ -59,12 +66,12 @@ export async function createEmployee(prevState: createEmployeeState, formData: F
     }
 
     // Prepare data for insertion into the database
-    const { firstName, lastName, branchID, salary, reportsTo } = validatedFields.data
+    const { firstName, lastName, email, branchID, salary, reportsTo } = validatedFields.data
 
     const { amount } = await SalaryModel.findById(new ObjectId(salary))
     const salaryAmount = Number(amount)
 
-    const newEmployee = await EmployeeModel.create({ firstname: firstName, lastname: lastName, branch_id: new ObjectId(branchID), salary: salaryAmount, reports_to: new ObjectId(reportsTo) })
+    const newEmployee = await EmployeeModel.create({ firstname: firstName, lastname: lastName, email, branch_id: new ObjectId(branchID), salary: salaryAmount, reports_to: new ObjectId(reportsTo) })
 
     // Revalidate the cache for the invoices page and redirect the user.
     revalidatePath('/dashboard/create')

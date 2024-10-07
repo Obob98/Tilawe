@@ -8,7 +8,7 @@ import RevenueModel from '../db/models/RevenueModel'
 import InvoiceModel from '../db/models/InvoiceModel'
 import ClientModel from '../db/models/ClientModel'
 import { ObjectId } from 'mongodb'
-import { BranchModel, EmployeeModel, InventoryModel, ProductModel } from '../db/models'
+import { BranchModel, EmployeeModel, InventoryModel, PaymentMethodModel, ProductModel, SalesTransactionModel } from '../db/models'
 import SalaryModel from '../db/models/SalaryModel'
 import connectDB from '../db/config/connectDB'
 import UserModel from '@/db/models/UserModel'
@@ -149,15 +149,33 @@ export async function fetchAdminAnalytics() {
     try {
         connectDB()
         const totalBranches = await BranchModel.find().countDocuments()
-        const totalClients = await ClientModel.find().countDocuments()
         const totalEmployees = await EmployeeModel.find().countDocuments()
         const totalUsers = await UserModel.find().countDocuments()
+        const paymentMethods = await PaymentMethodModel.find().countDocuments()
 
         return {
             totalBranches,
-            totalClients,
+            paymentMethods,
             totalEmployees,
             totalUsers
+        }
+    } catch (error) {
+        console.error('Database Error:', error)
+        throw new Error('Failed to fetch the latest invoices.')
+    }
+}
+
+export async function fetchShopManagerAnalytics() {
+    noStore()
+
+    try {
+        connectDB()
+        const totalInvoices = await InvoiceModel.find().countDocuments()
+        const totalSalesTransactions = await SalesTransactionModel.find().countDocuments()
+
+        return {
+            totalInvoices,
+            totalSalesTransactions
         }
     } catch (error) {
         console.error('Database Error:', error)

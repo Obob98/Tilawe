@@ -1,37 +1,26 @@
 'use client'
 
 import NavLinks from '@/ui/dashboard/components/nav-links';
-import { analyticsLinks, worksSpaceLinks, CEOAnalyticsLinks, CEOWorksSpaceLinks, adminAnalyticsLinks, adminworksSpaceLinks } from '@/lib/constants';
-import useClientSession from '@/customHooks/useClientSession';
+import { CEOAnalyticsLinks, CEOWorksSpaceLinks, adminAnalyticsLinks, adminworksSpaceLinks, BranchManagerAnalyticsLinks, BranchManagerWorksSpaceLinks } from '@/lib/constants';
+import { UserRole } from '@/types';
 
-export default function SideNavLinks({ role }: { role: string }) {
+export default function SideNavLinks({ role }: { role: UserRole }) {
+
+    const userLinks = role === "Company Manager"
+        ? [CEOAnalyticsLinks, CEOWorksSpaceLinks]
+        : role === "Admin"
+            ? [adminAnalyticsLinks, adminworksSpaceLinks]
+            : role === "Branch Manager"
+                ? [BranchManagerAnalyticsLinks, BranchManagerWorksSpaceLinks]
+                : []
 
     return (
         <>
-            {
-                role === "Company Manager" && (
-                    <>
-                        <small className='text-gray-400 pl-6 text-[12px] hidden md:block'>Overview</small>
-                        <NavLinks {...{ links: CEOAnalyticsLinks }} />
-                        <div className='bg-[#e0e0e0] w-full h-[1px]'></div>
-                        <small className='text-gray-400 pl-6 text-[12px] pt-4 hidden md:block'>Work Space</small>
-                        <NavLinks {...{ links: CEOWorksSpaceLinks }} />
-                    </>
-                )
-
-            }
-            {
-                role === "Admin" && (
-                    <>
-                        <small className='text-gray-400 pl-6 text-[12px] hidden md:block'>Analytics</small>
-                        <NavLinks {...{ links: adminAnalyticsLinks }} />
-                        <div className='bg-[#e0e0e0] w-full h-[1px]'></div>
-                        <small className='text-gray-400 pl-6 text-[12px] pt-4 hidden md:block'>Work Space</small>
-                        <NavLinks {...{ links: adminworksSpaceLinks }} />
-                    </>
-                )
-
-            }
+            <small className='text-gray-400 pl-6 text-[12px] hidden md:block'>Overview</small>
+            <NavLinks {...{ links: userLinks[0] }} />
+            <div className='bg-[#e0e0e0] w-full h-[1px]'></div>
+            <small className='text-gray-400 pl-6 text-[12px] pt-4 hidden md:block'>Work Space</small>
+            <NavLinks {...{ links: userLinks[1] }} />
         </>
     )
 }

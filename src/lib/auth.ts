@@ -68,7 +68,6 @@ export const authOptions: AuthOptions = {
                 }
             }
 
-            console.log('first', { session })
             return session
         }
     }

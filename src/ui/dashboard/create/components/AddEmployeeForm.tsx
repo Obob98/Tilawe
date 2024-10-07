@@ -6,7 +6,7 @@ import { Button } from '@/tremorComponents/Button';
 import { createEmployee } from '@/actions/employeeActions';
 import { useFormState } from 'react-dom';
 import { Branch, Employee, } from '@/types';
-import { TextInput } from '@/ui/dashboard/components/InputComponents';
+import { EmailInput, TextInput } from '@/ui/dashboard/components/InputComponents';
 import { FetchSalariesReturnType } from '@/lib/dbdirect';
 import { useToast } from "@/customHooks/useToast"
 import { Toaster } from "@/ui/dashboard/components/Toaster"
@@ -62,6 +62,17 @@ export default function AddEmployeeForm({ Branches, Salaries, Employees }: { Bra
                                     </p>
                                 ))}
                         </div>
+                    </div>
+                </div>
+                <div className='mb-4'>
+                    <EmailInput {...{ placeholder: "Your Email here", name: "email", id: 'email' }} />
+                    <div id="email-error" aria-live="polite" aria-atomic="true">
+                        {(state?.errors && state.errors?.email) &&
+                            state.errors.email.map((error: string, index: number) => (
+                                <p className="mt-2 text-sm text-red-500" key={index}>
+                                    {error}
+                                </p>
+                            ))}
                     </div>
                 </div>
                 <div className="mb-4">
