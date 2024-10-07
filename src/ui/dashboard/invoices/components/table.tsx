@@ -9,9 +9,11 @@ import { Card } from '@/tremorComponents/Card';
 export default async function InvoicesTable({
   query,
   currentPage,
+  canEdit
 }: {
   query: string;
   currentPage: number;
+  canEdit: boolean
 }) {
   const invoices = await fetchFilteredInvoices(query, currentPage);
 
@@ -74,9 +76,12 @@ export default async function InvoicesTable({
                 <th scope="col" className="px-3 py-5 font-medium text-center">
                   Status
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium text-center">
-                  Actions
-                </th>
+                {
+                  canEdit &&
+                  <th scope="col" className="px-3 py-5 font-medium text-center">
+                    Actions
+                  </th>
+                }
               </tr>
             </thead>
             <tbody className=" rounded-lg bg-[#f5f6f9]">
@@ -114,11 +119,14 @@ export default async function InvoicesTable({
                   <td className="whitespace-nowrap px-3 py-3  grid place-content-center">
                     <InvoiceStatus status={invoice.status} />
                   </td>
-                  <td className="whitespace-nowrap py-3  pl-6 pr-3">
-                    <div className="flex justify-center gap-3">
-                      <InvoiceTableActionsDropdown {...{ id: invoice._id as string }} />
-                    </div>
-                  </td>
+                  {
+                    canEdit &&
+                    <td className="whitespace-nowrap py-3  pl-6 pr-3">
+                      <div className="flex justify-center gap-3">
+                        <InvoiceTableActionsDropdown {...{ id: invoice._id as string }} />
+                      </div>
+                    </td>
+                  }
                 </tr>
               ))}
             </tbody>

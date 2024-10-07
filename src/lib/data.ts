@@ -8,9 +8,10 @@ import RevenueModel from '../db/models/RevenueModel'
 import InvoiceModel from '../db/models/InvoiceModel'
 import ClientModel from '../db/models/ClientModel'
 import { ObjectId } from 'mongodb'
-import { BranchModel, InventoryModel, ProductModel } from '../db/models'
+import { BranchModel, EmployeeModel, InventoryModel, ProductModel } from '../db/models'
 import SalaryModel from '../db/models/SalaryModel'
 import connectDB from '../db/config/connectDB'
+import UserModel from '@/db/models/UserModel'
 
 export type FetchRevenueReturnType = {
     [K in keyof Revenue]: K extends 'revenue' ? string : Revenue[K]
@@ -136,6 +137,28 @@ export async function fetchCities() {
         const data = await BranchModel.find().distinct('city')
 
         return data
+    } catch (error) {
+        console.error('Database Error:', error)
+        throw new Error('Failed to fetch the latest invoices.')
+    }
+}
+
+export async function fetchAdminAnalytics() {
+    noStore()
+
+    try {
+        connectDB()
+        const totalBranches = await BranchModel.find().countDocuments()
+        const totalClients = await ClientModel.find().countDocuments()
+        const totalEmployees = await EmployeeModel.find().countDocuments()
+        const totalUsers = await UserModel.find().countDocuments()
+
+        return {
+            totalBranches,
+            totalClients,
+            totalEmployees,
+            totalUsers
+        }
     } catch (error) {
         console.error('Database Error:', error)
         throw new Error('Failed to fetch the latest invoices.')

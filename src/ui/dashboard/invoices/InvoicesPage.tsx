@@ -6,6 +6,8 @@ import { InvoicesTableSkeleton } from '@/ui/dashboard/components/skeletons';
 import { Suspense } from 'react';
 import { fetchInvoicesPages } from '@/lib/data';
 import { Card } from '@/tremorComponents/Card';
+import useServerSession from '@/customHooks/useServerSession';
+import { User } from '@/types';
 
 export default async function InvoicesPage({
     searchParams,
@@ -17,10 +19,14 @@ export default async function InvoicesPage({
 }) {
     const query = searchParams?.query || '';
     const currentPage = Number(searchParams?.page) || 1;
-    console.log('searching...', { query })
 
     const totalPages = await fetchInvoicesPages(query);
 
+    const { session } = await useServerSession()
+
+    const user = session?.user as User
+
+    const canEdit = user.role === "Branch Manager"
 
     return (
         <div className="w-full  p-4">
@@ -32,11 +38,11 @@ export default async function InvoicesPage({
                 <div className="flex-1 max-w-[400px]">
                     <Search placeholder="Search invoices..." />
                 </div>
-                <CreateInvoice />
+                <CreateInvoice {...{ canCreate: canEdit }} />
             </Card>
             <div className='w-full '>
                 <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
-                    <Table query={query} currentPage={currentPage} />
+                    <Table {...{ query, currentPage, canEdit }} />
                 </Suspense>
                 <div className="my-5 flex w-full justify-center">
                     <Pagination totalPages={totalPages} />

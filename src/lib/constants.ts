@@ -1,4 +1,4 @@
-import { AddIcon, InventoryIcon, InvoiceIcon, NotificationIcon, OverviewIcon } from '@/assets/SVGComponents';
+import { AddIcon, InventoryIcon, InvoiceIcon, NotificationIcon, OverviewIcon, ReviewIcon } from '@/assets/SVGComponents';
 
 export const CEOAnalyticsLinks = [
     { name: 'Analytics', href: '/dashboard', icon: OverviewIcon },
@@ -11,7 +11,7 @@ export const CEOAnalyticsLinks = [
 ];
 
 export const CEOWorksSpaceLinks = [
-    { name: 'Create', href: '/dashboard/create', icon: AddIcon },
+    { name: 'Review Center', href: '/dashboard/reviewcenter', icon: ReviewIcon },
     { name: 'Notifications', href: '/dashboard/notifications', icon: NotificationIcon },
 ];
 

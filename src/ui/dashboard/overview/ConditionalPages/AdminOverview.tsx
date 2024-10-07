@@ -13,7 +13,7 @@ import { formatCurrency } from '@/lib/utils';
 import { fetchBranches } from '@/lib/dbdirect';
 
 export default async function AdminOverview() {
-    return <p>Admin Overview</p>
+    // return <p>Admin Overview</p>
     let data = await fetchCardData()
 
     const cardData = [
