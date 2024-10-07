@@ -7,9 +7,9 @@ import { BarChart } from "@/tremorComponents/BarChart"
 export const OverviewBarChart = ({ chartdata }: {
   chartdata: {
     date: string;
-    Lilongwe: number;
-    Blantyre: number;
-    Mzuzu: number;
+    Lilongwe?: number;
+    Blantyre?: number;
+    Mzuzu?: number;
   }[]
 }) => (
   <BarChart
@@ -18,7 +18,7 @@ export const OverviewBarChart = ({ chartdata }: {
     index="date"
     categories={["Lilongwe", "Blantyre", "Mzuzu"]}
     valueFormatter={(number: number) =>
-      `MK${Intl.NumberFormat("malawi").format(number / 100).toString()}m`
+      `MK${Intl.NumberFormat("malawi").format(number / 200).toString()}m`
     }
     onValueChange={(v) => console.log(v)}
   />

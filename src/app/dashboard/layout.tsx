@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth"
-import SideNav from '@/ui/dashboard/components/sidenav';
+import SideNav from '@/ui/dashboard/components/Sidenav';
 import SessionProvivider from '@/context/SessionProvider'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {

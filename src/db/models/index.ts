@@ -14,7 +14,7 @@ import ProductSoldModel from './ProductSoldModel';
 import PurchasedItemsModel from './PurchasedItemModel';
 import PurchaseTransactionModel from './PurchaseTransactionModel';
 import SalesTransactionModel from './SalesTransactionModel';
-import UserRoleModel from './UserRoleModel';
+import UserRoleModel from './UserRolesModel';
 
 
 export {

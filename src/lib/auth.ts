@@ -4,6 +4,8 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import { JWT } from 'next-auth/jwt'
 import connectDB from '@/db/config/connectDB'
+import { UserRoleModel } from '@/db/models'
+import { ObjectId } from "mongodb"
 
 export const authOptions: AuthOptions = {
     providers: [
@@ -16,7 +18,12 @@ export const authOptions: AuthOptions = {
 
                 try {
                     connectDB()
+                    console.log({ email, password })
                     const user = await UserModel.findOne({ email })
+                    console.log({ user })
+                    const { role } = await UserRoleModel.findById(new ObjectId(user.role))
+
+                    user.role = role
 
                     if (!user) return null
 

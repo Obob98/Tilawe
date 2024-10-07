@@ -15,19 +15,20 @@ import connectDB from '../db/config/connectDB'
 export type FetchRevenueReturnType = {
     [K in keyof Revenue]: K extends 'revenue' ? string : Revenue[K]
 }
-export async function fetchRevenue(): Promise<FetchRevenueReturnType[]> {
+export async function fetchRevenue(): Promise<Revenue[]> {
     noStore()
 
     try {
         connectDB()
         const data: Revenue[] = await RevenueModel.find()
 
-        return data.map(({ _id, month, revenue }) => (
+        return data.map(({ _id, month, revenue, city }) => (
             {
                 _id: _id?.toString(),
                 // month: formatDateToLocal(month),
                 month,
-                revenue: formatCurrency(revenue)
+                revenue: revenue / 100,
+                city
             }
         ))
     } catch (error) {
@@ -76,9 +77,9 @@ export async function fetchCardData() {
 
         const invoiceCountPromise = InvoiceModel.countDocuments()
 
-        const customerCountPromise = ClientModel.countDocuments()
+        const clientCountPromise = ClientModel.countDocuments()
 
-        const invoiceStatusPromise: Promise<{ paid: number, pending: number }> =
+        const invoiceStatusPromise: Promise<{ paid: number, pending: number, total: number }> =
             (async () => {
                 let paidTotal: Invoice[] | number = await InvoiceModel.find().where('status').equals('paid')
 
@@ -94,12 +95,12 @@ export async function fetchCardData() {
                     return sum + amount
                 }, 0)
 
-                return { paid: paidTotal, pending: pendingTotal }
+                return { paid: paidTotal, pending: pendingTotal, total: paidTotal + pendingTotal }
             })()
 
         const data = await Promise.all([
             invoiceCountPromise,
-            customerCountPromise,
+            clientCountPromise,
             invoiceStatusPromise,
         ])
 
@@ -107,12 +108,19 @@ export async function fetchCardData() {
         const numberOfCustomers = Number(data[1] ?? '0')
         const totalPaidInvoices = formatCurrency(data[2].paid ?? '0')
         const totalPendingInvoices = formatCurrency(data[2].pending ?? '0')
+        const total = formatCurrency(data[2].total ?? '0')
+
+        const paidPercentage = Math.floor((data[2].paid * 100) / data[2].total)
+        const pendingPercentage = Math.ceil((data[2].pending * 100) / data[2].total)
 
         return {
             numberOfCustomers,
             numberOfInvoices,
             totalPaidInvoices,
             totalPendingInvoices,
+            total,
+            paidPercentage,
+            pendingPercentage
         }
     } catch (error) {
         console.error('Database Error:', error)

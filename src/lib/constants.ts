@@ -1,7 +1,37 @@
 import { AddIcon, InventoryIcon, InvoiceIcon, NotificationIcon, OverviewIcon } from '@/assets/SVGComponents';
 
+export const CEOAnalyticsLinks = [
+    { name: 'Analytics', href: '/dashboard', icon: OverviewIcon },
+    {
+        name: 'Invoices',
+        href: '/dashboard/invoices',
+        icon: InvoiceIcon,
+    },
+    { name: 'Inventory', href: '/dashboard/inventory', icon: InventoryIcon },
+];
+
+export const CEOWorksSpaceLinks = [
+    { name: 'Create', href: '/dashboard/create', icon: AddIcon },
+    { name: 'Notifications', href: '/dashboard/notifications', icon: NotificationIcon },
+];
+
+export const adminAnalyticsLinks = [
+    { name: 'Analytics', href: '/dashboard', icon: OverviewIcon },
+    // {
+    //     name: 'Invoices',
+    //     href: '/dashboard/invoices',
+    //     icon: InvoiceIcon,
+    // },
+    // { name: 'Inventory', href: '/dashboard/inventory', icon: InventoryIcon },
+];
+
+export const adminworksSpaceLinks = [
+    { name: 'Create', href: '/dashboard/create', icon: AddIcon },
+    { name: 'Notifications', href: '/dashboard/notifications', icon: NotificationIcon },
+];
+
 export const analyticsLinks = [
-    { name: 'Overview', href: '/dashboard', icon: OverviewIcon },
+    { name: 'Analytics', href: '/dashboard', icon: OverviewIcon },
     {
         name: 'Invoices',
         href: '/dashboard/invoices',
