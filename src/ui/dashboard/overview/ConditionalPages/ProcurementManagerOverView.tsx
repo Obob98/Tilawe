@@ -2,14 +2,18 @@
 import { CardsSkeleton } from '@/ui/dashboard/components/skeletons';
 
 import { Suspense } from 'react';
+import { OverviewBarChart } from '@/ui/dashboard/overview/components/OverviewBarChart';
 import { ProgressCards } from '@/ui/dashboard/overview/components/ProgressCards';
 import { Card } from '@/tremorComponents/Card';
 import { SelectComponent } from '@/ui/dashboard/components/SelectComponent';
-import { fetchCities, fetchShopManagerAnalytics } from '@/lib/data';
+import { fetchAdminAnalytics, fetchCardData, fetchCities, fetchShopManagerAnalytics } from '@/lib/data';
+import { fetchRevenue } from '@/lib/data';
+import { Revenue } from '@/types';
+import { formatCurrency } from '@/lib/utils';
 import { fetchBranches } from '@/lib/dbdirect';
 import { AdminTrackerChart } from '../components/AdminTrackerChart';
 
-export default async function BranchManagerOverView() {
+export default async function ProcurementManagerOverView() {
     // return <p>Admin Overview</p>
     let { totalInvoices, totalSalesTransactions } = await fetchShopManagerAnalytics()
 

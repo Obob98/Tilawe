@@ -1,7 +1,7 @@
 'use client'
 
 import NavLinks from '@/ui/dashboard/components/nav-links';
-import { CEOAnalyticsLinks, CEOWorksSpaceLinks, adminAnalyticsLinks, adminworksSpaceLinks, BranchManagerAnalyticsLinks, BranchManagerWorksSpaceLinks } from '@/lib/constants';
+import { CEOAnalyticsLinks, CEOWorksSpaceLinks, adminAnalyticsLinks, adminworksSpaceLinks, BranchManagerAnalyticsLinks, BranchManagerWorksSpaceLinks, ProcurementManagerAnalyticsLinks, ProcurementManagerWorksSpaceLinks, SupplyChainManagerWorksSpaceLinks, SupplyChainManagerAnalyticsLinks } from '@/lib/constants';
 import { UserRole } from '@/types';
 
 export default function SideNavLinks({ role }: { role: UserRole }) {
@@ -12,7 +12,11 @@ export default function SideNavLinks({ role }: { role: UserRole }) {
             ? [adminAnalyticsLinks, adminworksSpaceLinks]
             : role === "Branch Manager"
                 ? [BranchManagerAnalyticsLinks, BranchManagerWorksSpaceLinks]
-                : []
+                : role === "Procurement Manager"
+                    ? [ProcurementManagerAnalyticsLinks, ProcurementManagerWorksSpaceLinks]
+                    : role === "Supply Chain Manager"
+                        ? [SupplyChainManagerAnalyticsLinks, SupplyChainManagerWorksSpaceLinks]
+                        : [[], []]
 
     return (
         <>
