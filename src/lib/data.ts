@@ -8,7 +8,7 @@ import RevenueModel from '../db/models/RevenueModel'
 import InvoiceModel from '../db/models/InvoiceModel'
 import ClientModel from '../db/models/ClientModel'
 import { ObjectId } from 'mongodb'
-import { InventoryModel, ProductModel } from '../db/models'
+import { BranchModel, InventoryModel, ProductModel } from '../db/models'
 import SalaryModel from '../db/models/SalaryModel'
 import connectDB from '../db/config/connectDB'
 
@@ -27,7 +27,7 @@ export async function fetchRevenue(): Promise<Revenue[]> {
                 _id: _id?.toString(),
                 // month: formatDateToLocal(month),
                 month,
-                revenue: revenue / 100,
+                revenue,
                 city
             }
         ))
@@ -125,6 +125,20 @@ export async function fetchCardData() {
     } catch (error) {
         console.error('Database Error:', error)
         throw new Error('Failed to fetch card data.')
+    }
+}
+
+export async function fetchCities() {
+    noStore()
+
+    try {
+        connectDB()
+        const data = await BranchModel.find().distinct('city')
+
+        return data
+    } catch (error) {
+        console.error('Database Error:', error)
+        throw new Error('Failed to fetch the latest invoices.')
     }
 }
 
@@ -298,8 +312,6 @@ export async function fetchInvoiceById(id: string) {
         connectDB()
         const _id = new ObjectId(id)
 
-        console.log({ _id })
-
         const data = await InvoiceModel.findById(id).populate('client_id')
 
         const invoice: FetchInvoicesById = {
@@ -316,8 +328,6 @@ export async function fetchInvoiceById(id: string) {
             due_date: data.due_date.toString(),
             status: data.status,
         }
-
-        console.log({ invoice })
 
         return invoice
     } catch (error) {
@@ -339,8 +349,6 @@ export async function fetchFilteredInventory(
         await ProductModel.find()
 
         const regex = new RegExp(query, 'i')
-
-        console.log({ regex })
 
         // Build the search query with proper checks for different field types
         const inventory = await InventoryModel.aggregate([
@@ -379,8 +387,6 @@ export async function fetchFilteredInventory(
                 _id: invoice?._id?.toString() || '',
             }
         })
-
-        console.log({ formatedInventory })
 
         return deepClone(formatedInventory)
     }

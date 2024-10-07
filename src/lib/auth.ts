@@ -18,9 +18,7 @@ export const authOptions: AuthOptions = {
 
                 try {
                     connectDB()
-                    console.log({ email, password })
                     const user = await UserModel.findOne({ email })
-                    console.log({ user })
                     const { role } = await UserRoleModel.findById(new ObjectId(user.role))
 
                     user.role = role

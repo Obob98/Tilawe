@@ -359,7 +359,7 @@ const revenue: Revenue[] = [
     { city: 'Blantyre', month: 'May', revenue: 130000000 },
     { city: 'Mzuzu', month: 'May', revenue: 330000000 },
     { city: 'Lilongwe', month: 'Jun', revenue: 320000000 },
-    { city: 'Blantyre', month: 'Jun', revenue: 2520000000 },
+    { city: 'Blantyre', month: 'Jun', revenue: 252000000 },
     { city: 'Mzuzu', month: 'Jun', revenue: 420000000 },
     { city: 'Lilongwe', month: 'Jul', revenue: 350000000 },
     { city: 'Blantyre', month: 'Jul', revenue: 230000000 },

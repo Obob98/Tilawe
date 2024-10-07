@@ -32,7 +32,6 @@ export default function LoginForm() {
     } else {
       // Redirect on successful login
       // router.push('/dashboard')
-      console.log({ res })
       setIsSubmitting(false)
       window.location.href = '/dashboard'
     }

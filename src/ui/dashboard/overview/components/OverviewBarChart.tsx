@@ -1,5 +1,6 @@
 "use client"
 
+import { barChartFormatCurrency } from "@/lib/utils";
 import { BarChart } from "@/tremorComponents/BarChart"
 
 
@@ -17,9 +18,7 @@ export const OverviewBarChart = ({ chartdata }: {
     data={chartdata}
     index="date"
     categories={["Lilongwe", "Blantyre", "Mzuzu"]}
-    valueFormatter={(number: number) =>
-      `MK${Intl.NumberFormat("malawi").format(number / 200).toString()}m`
-    }
+    valueFormatter={barChartFormatCurrency}
     onValueChange={(v) => console.log(v)}
   />
 )
