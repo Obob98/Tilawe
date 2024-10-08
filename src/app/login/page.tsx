@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation'
 
 import LoginForm from '@/ui/dashboard/components/login-form';
 import useServerSession from '@/customHooks/useServerSession';
+import Link from 'next/link';
+import { Button } from '@/tremorComponents/Button';
 
 export const metadata: Metadata = {
   title: 'Login',
@@ -17,10 +19,33 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="flex items-center justify-center md:h-screen">
-      <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
-        <LoginForm />
-      </div>
-    </main>
+    <>
+      <header className='w-full max-w-[1120px] mx-auto overflow-hidden'>
+
+        <nav className='flex items-center justify-between mt-8'>
+          <Link
+            href={"/"}
+            className='text-primary font-semibold text-xl '
+          >
+            Tilawe
+          </Link>
+
+
+          <Link
+            href="/"
+          >
+            <Button variant='secondary' className='bg-transparent px-8 py-4 w-fit h-fit hover:bg-primary hover:text-white ' >
+              Back To Home
+            </Button>
+          </Link>
+        </nav>
+
+      </header>
+      <main className="flex items-center justify-center md:h-screen">
+        <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
+          <LoginForm />
+        </div>
+      </main>
+    </>
   );
 }

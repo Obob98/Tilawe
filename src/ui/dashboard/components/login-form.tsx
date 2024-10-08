@@ -38,8 +38,10 @@ export default function LoginForm() {
   }
 
   return (
-    <main className='w-fit h-screen grid place-content-center' >
-      {error && <p style={{ color: 'red' }}> {error} </p>
+    <main className='w-fit h-screen flex flex-col items-center' >
+      <h1 className='mt-32 mb-8 text-3xl font-bold'>Login</h1>
+
+      {error && <p style={{ color: 'red' }} className='mb-4'> {error} </p>
       }
       <form onSubmit={handleSubmit} className='w-[400px] flex flex-col gap-8' >
         <div className='w-full' >
@@ -72,8 +74,12 @@ function LoginButton({ isSubmitting }: { isSubmitting: boolean }) {
 
   return (
     <Button
-      className={cx("p-4 bg-primary text-white rounded-md", isSubmitting && 'opacity-50')}
-      aria-disabled={isSubmitting} disabled={isSubmitting}>
+      className={cx("p-4 bg-primary text-white rounded-md")}
+      aria-disabled={isSubmitting}
+      disabled={isSubmitting}
+      isLoading={isSubmitting}
+      loadingText='Verifying...'
+    >
       Log in
     </Button>
   );

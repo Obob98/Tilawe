@@ -4,11 +4,17 @@
 
 html,
 body {
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
 }
 
 body {
   background: #f5f6fa;
+}
+
+img {
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 input[type='number'] {
