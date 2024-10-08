@@ -6,25 +6,32 @@ import { OverviewBarChart } from '@/ui/dashboard/overview/components/OverviewBar
 import { ProgressCards } from '@/ui/dashboard/overview/components/ProgressCards';
 import { Card } from '@/tremorComponents/Card';
 import { SelectComponent } from '@/ui/dashboard/components/SelectComponent';
-import { fetchAdminAnalytics, fetchCardData, fetchCities, fetchShopManagerAnalytics } from '@/lib/data';
+import { fetchAdminAnalytics, fetchCardData, fetchCities, fetchProcurementManagerAnalytics, fetchShopManagerAnalytics } from '@/lib/data';
 import { fetchRevenue } from '@/lib/data';
 import { Revenue } from '@/types';
 import { formatCurrency } from '@/lib/utils';
 import { fetchBranches } from '@/lib/dbdirect';
 import { AdminTrackerChart } from '../components/AdminTrackerChart';
+import SuppliersTable from '../../suppliers/components/table';
+import LatestInvoicesTable from '../components/LatestInvoicesTable';
+import TopSuppliersTable from '../components/TopSuppliersTable';
 
 export default async function ProcurementManagerOverView() {
     // return <p>Admin Overview</p>
-    let { totalInvoices, totalSalesTransactions } = await fetchShopManagerAnalytics()
+    let { totalInvoices, totalPurchaseTransactions } = await fetchProcurementManagerAnalytics()
 
     const cardData = [
         {
-            cardTitle: "totalInvoices",
+            cardTitle: "Total Purchase Transactions",
+            numalator: totalPurchaseTransactions,
+        },
+        {
+            cardTitle: "Total Invoices",
             numalator: totalInvoices,
         },
         {
-            cardTitle: "totalSalesTransactions",
-            numalator: totalSalesTransactions,
+            cardTitle: "Total Items Bought",
+            numalator: Math.floor(totalPurchaseTransactions / 3),
         },
     ]
 
@@ -64,11 +71,19 @@ export default async function ProcurementManagerOverView() {
                         <ProgressCards {...{ data: cardData }} />
                     </Suspense>
                 </div>
-                <div className="w-full mt-4 bg-white shadow-sm p-8 rounded-lg border border-[#e0e0e0]">
-                    <p className='pb-8'>Systmem Perfomance</p>
-                    <Suspense fallback={<CardsSkeleton />}>
-                        <AdminTrackerChart />
-                    </Suspense>
+                <div className="w-full ">
+                    <div className='flex gap-4 items-start w-full '>
+                        <div className='flex-[3]'>
+                            <Suspense fallback={<CardsSkeleton />}>
+                                <LatestInvoicesTable {...{ currentPage: 1, query: '', title: 'Recent Purchase Transactions' }} />
+                            </Suspense>
+                        </div>
+                        <div className='flex-[2]'>
+                            <Suspense fallback={<CardsSkeleton />}>
+                                <TopSuppliersTable {...{ title: "Top Suppliers" }} />
+                            </Suspense>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main >

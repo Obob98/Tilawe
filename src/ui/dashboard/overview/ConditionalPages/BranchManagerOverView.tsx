@@ -5,22 +5,37 @@ import { Suspense } from 'react';
 import { ProgressCards } from '@/ui/dashboard/overview/components/ProgressCards';
 import { Card } from '@/tremorComponents/Card';
 import { SelectComponent } from '@/ui/dashboard/components/SelectComponent';
-import { fetchCities, fetchShopManagerAnalytics } from '@/lib/data';
+import { fetchCities, fetchRevenue, fetchShopManagerAnalytics } from '@/lib/data';
 import { fetchBranches } from '@/lib/dbdirect';
 import { AdminTrackerChart } from '../components/AdminTrackerChart';
+import { OverviewBarChart } from '../components/OverviewBarChart';
+import { transformData } from './CEOOverview';
 
 export default async function BranchManagerOverView() {
     // return <p>Admin Overview</p>
     let { totalInvoices, totalSalesTransactions } = await fetchShopManagerAnalytics()
 
+    const revenue = await fetchRevenue()
+    const chartdata = transformData(revenue)
+
+    const data = chartdata.map(({ date, Lilongwe }) => (
+        {
+            date, "Maula Mall, shop 1": Lilongwe
+        }
+    ))
+
     const cardData = [
         {
-            cardTitle: "totalInvoices",
+            cardTitle: "Total Invoices",
             numalator: totalInvoices,
         },
         {
-            cardTitle: "totalSalesTransactions",
-            numalator: totalSalesTransactions,
+            cardTitle: "Total Sales Transactions",
+            numalator: 123,
+        },
+        {
+            cardTitle: "Total Employees",
+            numalator: 9,
         },
     ]
 
@@ -63,7 +78,7 @@ export default async function BranchManagerOverView() {
                 <div className="w-full mt-4 bg-white shadow-sm p-8 rounded-lg border border-[#e0e0e0]">
                     <p className='pb-8'>Systmem Perfomance</p>
                     <Suspense fallback={<CardsSkeleton />}>
-                        <AdminTrackerChart />
+                        <OverviewBarChart {...{ chartdata: data }} />
                     </Suspense>
                 </div>
             </div>

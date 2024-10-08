@@ -90,7 +90,7 @@ export default async function CEOOverview() {
     )
 }
 
-const transformData = (data: Revenue[]) => {
+export const transformData = (data: Revenue[]) => {
     const transformedData = []
 
     let i = 0

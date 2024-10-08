@@ -8,7 +8,7 @@ import RevenueModel from '../db/models/RevenueModel'
 import InvoiceModel from '../db/models/InvoiceModel'
 import ClientModel from '../db/models/ClientModel'
 import { ObjectId } from 'mongodb'
-import { BranchModel, EmployeeModel, InventoryModel, PaymentMethodModel, ProductModel, SalesTransactionModel } from '../db/models'
+import { BranchModel, EmployeeModel, InventoryModel, PaymentMethodModel, ProductModel, PurchasedItemsModel, PurchaseTransactionModel, SalesTransactionModel, SupplierModel } from '../db/models'
 import SalaryModel from '../db/models/SalaryModel'
 import connectDB from '../db/config/connectDB'
 import UserModel from '@/db/models/UserModel'
@@ -176,6 +176,22 @@ export async function fetchShopManagerAnalytics() {
         return {
             totalInvoices,
             totalSalesTransactions
+        }
+    } catch (error) {
+        console.error('Database Error:', error)
+        throw new Error('Failed to fetch the latest invoices.')
+    }
+}
+
+export async function fetchProcurementManagerAnalytics() {
+    noStore()
+
+    try {
+        connectDB()
+
+        return {
+            totalPurchaseTransactions: 89,
+            totalInvoices: 7
         }
     } catch (error) {
         console.error('Database Error:', error)
@@ -436,6 +452,133 @@ export async function fetchFilteredInventory(
         throw new Error('Failed to fetch Inventory.')
     }
 }
+
+export async function fetchLatestPurchasedItems(
+    query: string,
+    currentPage: number,
+) {
+    noStore()
+
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE
+
+    try {
+        await connectDB()
+
+        const regex = new RegExp(query, 'i')
+
+        // Build the search query with proper checks for different field types
+        const purchasedItems: PurchasedItem[] = await PurchasedItemsModel.aggregate([
+            {
+                $lookup: {
+                    from: 'items',  // The name of the Client collection
+                    localField: 'item_id',
+                    foreignField: '_id',
+                    as: 'item_info'
+                }
+            },
+            { $unwind: '$item_info' },  // Unwind the client_info array
+            {
+                $addFields: {
+                    item_id: '$item_info'  // Replace client_id with the populated client_info
+                }
+            },
+            {
+                $match: {
+                    $or: [
+                        { 'item_id.name': { $regex: regex } },
+                        { 'item_id.type': { $regex: regex } },
+                        { 'item_id.price': { $regex: regex } },
+                        { quantity: { $regex: regex } }
+                    ]
+                }
+            },
+            { $sort: { quantity: -1 } },
+            { $skip: offset },
+            { $limit: ITEMS_PER_PAGE }
+        ]);
+
+        const formatedPurchasedItems = purchasedItems.map(({ _id, item_id, purchase_transaction_id, quantity, unit_price }) => {
+            return {
+                item_id,
+                purchase_transaction_id,
+                quantity,
+                unit_price,
+                _id: _id?.toString() || '',
+            }
+        })
+
+        return deepClone(formatedPurchasedItems)
+    }
+    catch (error) {
+        console.error('Database Error:', error)
+        throw new Error('Failed to fetch Inventory.')
+    }
+}
+
+// export async function fetchTopSuppliers(
+//     query: string,
+//     currentPage: number,
+// ) {
+//     noStore()
+
+//     const offset = (currentPage - 1) * ITEMS_PER_PAGE
+
+//     try {
+//         await connectDB()
+
+//         const regex = new RegExp(query, 'i')
+
+//         // Build the search query with proper checks for different field types
+//         const purchasedItems: PurchasedItem[] = await PurchasedItemsModel.aggregate([
+//             {
+//                 $lookup: {
+//                     from: 'items',  // The name of the Client collection
+//                     localField: 'item_id',
+//                     foreignField: '_id',
+//                     as: 'item_info'
+//                 }
+//             },
+//             { $unwind: '$item_info' },  // Unwind the client_info array
+//             {
+//                 $addFields: {
+//                     item_id: '$item_info'  // Replace client_id with the populated client_info
+//                 }
+//             },
+//             {
+//                 $match: {
+//                     $or: [
+//                         { 'item_id.name': { $regex: regex } },
+//                         { 'item_id.type': { $regex: regex } },
+//                         { 'item_id.price': { $regex: regex } },
+//                         { quantity: { $regex: regex } }
+//                     ]
+//                 }
+//             },
+//             { $sort: { quantity: -1 } },
+//             { $skip: offset },
+//             { $limit: ITEMS_PER_PAGE }
+//         ]);
+
+//         console.log({ purchasedItems })
+//         const formatedPurchasedItems = purchasedItems.map(({ _id, item_id, purchase_transaction_id, quantity, unit_price }) => {
+//             return {
+//                 item_id,
+//                 purchase_transaction_id,
+//                 quantity,
+//                 unit_price,
+//                 _id: _id?.toString() || '',
+//             }
+//         })
+
+//         console.log({ formatedPurchasedItems })
+
+//         return deepClone(formatedPurchasedItems)
+//     }
+//     catch (error) {
+//         console.error('Database Error:', error)
+//         throw new Error('Failed to fetch Inventory.')
+//     }
+// }
 
 export async function fetchFilteredInventoryPages(
     query: string,
