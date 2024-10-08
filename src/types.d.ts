@@ -52,6 +52,13 @@ export interface Employee extends defs {
     branch_id: string //ObjectId
 }
 
+export interface Notification extends defs {
+    userId: string //ObjectId
+    message: string
+    type: string
+
+}
+
 export interface Inventory extends defs {
     branch_id: string //ObjectId
     product_id: string //ObjectId
@@ -128,4 +135,4 @@ export interface Salary extends defs {
     grade: string
 }
 
-export type TilaweDatabaseEntity = Branch | Client | Employee | Invoice | Inventory | Item | PaymentMethod | Payment | Product | ProductSold | PurchasedItem | PurchaseTransaction | Supplier | Revenue | SalesTransaction | Salaries | User | UserRole | UserRoleOBJ
+export type TilaweDatabaseEntity = Branch | Client | Employee | Invoice | Inventory | Item | PaymentMethod | Payment | Product | ProductSold | PurchasedItem | PurchaseTransaction | Supplier | Revenue | SalesTransaction | Salaries | User | UserRole | UserRoleOBJ | Notification

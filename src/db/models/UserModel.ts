@@ -1,4 +1,5 @@
-import mongoose, { model, models, Schema } from "mongoose";
+import { model, models, Schema } from "mongoose";
+import NotificationModel from "./NotificationModel";
 
 const UserSchema = new Schema({
     username: {
@@ -18,6 +19,19 @@ const UserSchema = new Schema({
         default: 'viewer'
     }
 }, { timestamps: true })
+
+UserSchema.pre('save', async function (next) {
+
+    const notification = {
+        message: 'your default password is 1234, make sure to update as soon as possible',
+        type: 'account creation',
+        userId: this._id
+    }
+
+    await NotificationModel.create(notification)
+
+    next();
+});
 
 const UserModel = models.User || model('User', UserSchema)
 
