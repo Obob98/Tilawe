@@ -1,6 +1,6 @@
 import { models, Schema, model } from 'mongoose'
 
-const EmployeeSchema = new Schema({
+const TempEmployeeSchema = new Schema({
     firstname: {
         type: String,
         required: [true, 'First name is required']
@@ -33,6 +33,5 @@ const EmployeeSchema = new Schema({
     }
 }, { timestamps: true })
 
-const EmployeeModel = models.Employee || model('Employee', EmployeeSchema)
-export default EmployeeModel
-
+const TempEmployeeModel = models.Employee || model('Employee', TempEmployeeSchema)
+export default TempEmployeeModel

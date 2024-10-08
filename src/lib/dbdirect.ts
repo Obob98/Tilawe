@@ -14,7 +14,8 @@ import {
     Supplier,
     Revenue,
     SalesTransaction,
-    Salary
+    Salary,
+    Notification
 } from '@/types'
 import {
     RevenueModel,
@@ -32,10 +33,12 @@ import {
     PurchasedItemsModel,
     PurchaseTransactionModel,
     SalesTransactionModel,
-    SalaryModel
+    SalaryModel,
+    NotificationModel
 } from '../db/models';
 import { formatCurrency } from './utils';
 import connectDB from '../db/config/connectDB';
+import { ObjectId } from 'mongodb';
 
 import { unstable_noStore as noStore } from 'next/cache';
 
@@ -307,5 +310,19 @@ export async function fetchSalaries(): Promise<FetchSalariesReturnType[]> {
     } catch (err) {
         console.error('Database Error:', err)
         throw new Error('Failed to fetch all customers.')
+    }
+}
+
+export async function fetchNotifications(id: string): Promise<Notification[]> {
+    console.log({ id })
+
+    try {
+        const notifications: Notification[] = await NotificationModel.find().where({ userId: new ObjectId(id) })
+
+        return notifications
+    } catch (error) {
+        console.log('some error occured')
+
+        throw new Error('failed to fetch notifications')
     }
 }

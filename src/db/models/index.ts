@@ -15,7 +15,7 @@ import PurchasedItemsModel from './PurchasedItemModel';
 import PurchaseTransactionModel from './PurchaseTransactionModel';
 import SalesTransactionModel from './SalesTransactionModel';
 import UserRoleModel from './UserRolesModel';
-
+import NotificationModel from './NotificationModel';
 
 export {
     RevenueModel,
@@ -34,5 +34,6 @@ export {
     PurchasedItemsModel,
     PurchaseTransactionModel,
     SalesTransactionModel,
-    UserRoleModel
+    UserRoleModel,
+    NotificationModel
 } 

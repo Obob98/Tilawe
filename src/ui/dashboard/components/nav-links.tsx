@@ -3,19 +3,27 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { useEffect, useRef, useState } from 'react';
+import { cx } from '@/lib/utils';
 
-
-
-export default function NavLinks({ links }: {
+export default function NavLinks({ links, showNotificationBadge }: {
   links: {
     name: string;
     href: string;
     icon: ({ color }: {
       color?: string | undefined;
     }) => JSX.Element;
-  }[]
+  }[],
+  showNotificationBadge?: boolean
 }) {
   const pathname = usePathname()
+  const viewdRef = useRef(false)
+
+  useEffect(() => {
+    if (!viewdRef?.current) {
+      viewdRef.current = true
+    }
+  }, [])
 
   return (
     <>
@@ -39,7 +47,13 @@ export default function NavLinks({ links }: {
                 'text-white bg-primary hover:bg-primary': pathname === link.href,
               },
             )}>
-              <link.icon {...{ color: pathname === link.href ? '#fff' : '#000' }} />
+              <div className='relative'>
+                {
+                  (link.name === "Notifications" && showNotificationBadge && !viewdRef.current) &&
+                  <div className={cx('absolute w-3 h-3 -top-[2px] -left-[2px] rounded-full bg-primary ', pathname === link.href && 'bg-white')}></div>
+                }
+                <link.icon {...{ color: pathname === link.href ? '#fff' : '#000' }} />
+              </div>
               <p className="hidden md:block text-sm">{link.name}</p>
             </div>
 
