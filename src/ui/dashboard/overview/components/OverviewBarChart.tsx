@@ -1,25 +1,32 @@
 "use client"
 
+import { barChartFormatCurrency, deepClone } from "@/lib/utils";
 import { BarChart } from "@/tremorComponents/BarChart"
 
 
 
 export const OverviewBarChart = ({ chartdata }: {
   chartdata: {
+    [key: string]: any;
     date: string;
-    Lilongwe: number;
-    Blantyre: number;
-    Mzuzu: number;
+    Lilongwe?: number;
+    Blantyre?: number;
+    Mzuzu?: number;
   }[]
-}) => (
-  <BarChart
+}) => {
+
+  let categories = deepClone(chartdata[0])
+
+  //@ts-ignore
+  delete categories["date"]
+  categories = Object.keys(categories)
+
+  return <BarChart
     className="h-80"
     data={chartdata}
     index="date"
-    categories={["Lilongwe", "Blantyre", "Mzuzu"]}
-    valueFormatter={(number: number) =>
-      `MK${Intl.NumberFormat("malawi").format(number / 100).toString()}m`
-    }
+    categories={categories as string[]}
+    valueFormatter={barChartFormatCurrency}
     onValueChange={(v) => console.log(v)}
   />
-)
+}

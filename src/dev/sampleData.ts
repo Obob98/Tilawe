@@ -1,4 +1,4 @@
-import { Branch, Client, Employee, Inventory, Invoice, Item, Payment, PaymentMethod, Product, ProductSold, PurchasedItem, PurchaseTransaction, Revenue, Salary, SalesTransaction, Supplier } from "@/types";
+import { Branch, Client, Employee, Inventory, Invoice, Item, Payment, PaymentMethod, Product, ProductSold, PurchasedItem, PurchaseTransaction, Revenue, Salary, SalesTransaction, Supplier, UserRole, UserRoleOBJ } from "@/types";
 
 const branches: Branch[] = [
     {
@@ -82,24 +82,59 @@ const employees: Employee[] = [
     {
         firstname: "Muhammed",
         lastname: "Yasid",
+        email: "muhammed@gmail.com",
         branch_id: 'placeholder'
     },
     {
         firstname: "Dave",
         lastname: "Bandawe",
+        email: "dave@gmail.com",
         branch_id: 'placeholder'
     },
     {
         firstname: "Maria",
         lastname: "magada",
+        email: "maria@gmail.com",
         branch_id: "placeholder"
     },
     {
         firstname: "Ester",
         lastname: "chiyenda",
+        email: "ester@gmail.com",
+        branch_id: "placeholder"
+    },
+    {
+        firstname: "Mayamiko",
+        lastname: "Mchere",
+        email: "mayamiko@gmail.com",
+        branch_id: "placeholder"
+    },
+    {
+        firstname: "Mphatso",
+        lastname: "Tambala",
+        email: "mphatso@gmail.com",
         branch_id: "placeholder"
     }
 ]
+
+const UserRoles: UserRoleOBJ[] = [
+    {
+        role: "Company Manager"
+    },
+    {
+        role: "Admin"
+    },
+    {
+        role: "Supply Chain Manager"
+    },
+    {
+        role: "Branch Manager"
+    },
+    {
+        role: "Procurement Manager"
+    },
+]
+
 
 const inventory: Inventory[] = [
     {
@@ -308,18 +343,42 @@ const suppliers: Supplier[] = [
 ]
 
 const revenue: Revenue[] = [
-    { month: 'Jan', revenue: 200000000 },
-    { month: 'Feb', revenue: 180000000 },
-    { month: 'Mar', revenue: 220000000 },
-    { month: 'Apr', revenue: 250000000 },
-    { month: 'May', revenue: 230000000 },
-    { month: 'Jun', revenue: 320000000 },
-    { month: 'Jul', revenue: 350000000 },
-    { month: 'Aug', revenue: 370000000 },
-    { month: 'Sep', revenue: 250000000 },
-    { month: 'Oct', revenue: 280000000 },
-    { month: 'Nov', revenue: 300000000 },
-    { month: 'Dec', revenue: 480000000 },
+    { city: 'Lilongwe', month: 'Jan', revenue: 200000000 },
+    { city: 'Blantyre', month: 'Jan', revenue: 102800000 },
+    { city: 'Mzuzu', month: 'Jan', revenue: 156000000 },
+    { city: 'Lilongwe', month: 'Feb', revenue: 180000000 },
+    { city: 'Blantyre', month: 'Feb', revenue: 104000000 },
+    { city: 'Mzuzu', month: 'Feb', revenue: 190900000 },
+    { city: 'Lilongwe', month: 'Mar', revenue: 220000000 },
+    { city: 'Blantyre', month: 'Mar', revenue: 290700000 },
+    { city: 'Mzuzu', month: 'Mar', revenue: 170000000 },
+    { city: 'Lilongwe', month: 'Apr', revenue: 250000000 },
+    { city: 'Blantyre', month: 'Apr', revenue: 240000000 },
+    { city: 'Mzuzu', month: 'Apr', revenue: 190000000 },
+    { city: 'Lilongwe', month: 'May', revenue: 230000000 },
+    { city: 'Blantyre', month: 'May', revenue: 130000000 },
+    { city: 'Mzuzu', month: 'May', revenue: 330000000 },
+    { city: 'Lilongwe', month: 'Jun', revenue: 320000000 },
+    { city: 'Blantyre', month: 'Jun', revenue: 252000000 },
+    { city: 'Mzuzu', month: 'Jun', revenue: 420000000 },
+    { city: 'Lilongwe', month: 'Jul', revenue: 350000000 },
+    { city: 'Blantyre', month: 'Jul', revenue: 230000000 },
+    { city: 'Mzuzu', month: 'Jul', revenue: 310000000 },
+    { city: 'Lilongwe', month: 'Aug', revenue: 370000000 },
+    { city: 'Blantyre', month: 'Aug', revenue: 350000000 },
+    { city: 'Mzuzu', month: 'Aug', revenue: 240000000 },
+    { city: 'Lilongwe', month: 'Sep', revenue: 250000000 },
+    { city: 'Blantyre', month: 'Sep', revenue: 550000000 },
+    { city: 'Mzuzu', month: 'Sep', revenue: 450000000 },
+    { city: 'Lilongwe', month: 'Oct', revenue: 280000000 },
+    { city: 'Blantyre', month: 'Oct', revenue: 140000000 },
+    { city: 'Mzuzu', month: 'Oct', revenue: 280000000 },
+    { city: 'Lilongwe', month: 'Nov', revenue: 700000000 },
+    { city: 'Blantyre', month: 'Nov', revenue: 400000000 },
+    { city: 'Mzuzu', month: 'Nov', revenue: 300000000 },
+    { city: 'Lilongwe', month: 'Dec', revenue: 880000000 },
+    { city: 'Blantyre', month: 'Dec', revenue: 680000000 },
+    { city: 'Mzuzu', month: 'Dec', revenue: 380000000 },
 ]
 
 const sampleData = {
@@ -338,6 +397,7 @@ const sampleData = {
     purchasedItems,
     purchaseTransactions,
     suppliers,
-    revenue
+    revenue,
+    UserRoles
 }
 export default sampleData

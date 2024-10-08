@@ -18,6 +18,22 @@ export interface Branch extends defs {
     branch_type: BranchType
 }
 
+
+export type UserRole = 'Admin' | 'Company Manager' | "Supply Chain Manager" | "Branch Manager" | "Procurement Manager"
+
+export interface User extends defs {
+    _id: string
+    username: string
+    email: string
+    role: UserRole // ObjectId
+}
+
+
+export interface UserRoleOBJ extends defs {
+    role: UserRole
+}
+
+
 export interface Client extends defs {
     firstname: string
     lastname: string
@@ -30,6 +46,7 @@ export interface Employee extends defs {
     firstname: string
     lastname: string
     job_title?: string
+    email: string
     salary?: number
     reports_to?: string //ObjectId
     branch_id: string //ObjectId
@@ -90,6 +107,7 @@ export interface PurchaseTransaction extends defs {
 }
 
 export interface Revenue extends defs {
+    city: string,
     month: string,
     revenue: number
 }
@@ -110,4 +128,4 @@ export interface Salary extends defs {
     grade: string
 }
 
-export type TilaweDatabaseEntity = Branch | Client | Employee | Invoice | Inventory | Item | PaymentMethod | Payment | Product | ProductSold | PurchasedItem | PurchaseTransaction | Supplier | Revenue | SalesTransaction | Salaries
+export type TilaweDatabaseEntity = Branch | Client | Employee | Invoice | Inventory | Item | PaymentMethod | Payment | Product | ProductSold | PurchasedItem | PurchaseTransaction | Supplier | Revenue | SalesTransaction | Salaries | User | UserRole | UserRoleOBJ

@@ -3,7 +3,9 @@ import { deleteInvoice } from '@/actions/invoiceActions';
 import { AddIcon } from '@/assets/SVGComponents';
 import { Card } from '@/tremorComponents/Card';
 
-export function CreateInvoice() {
+export function CreateInvoice({ canCreate }: { canCreate: boolean }) {
+  if (!canCreate) return null
+
   return (
     <Link
       href="/dashboard/create#createInvoice"

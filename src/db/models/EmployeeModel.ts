@@ -12,6 +12,11 @@ const EmployeeSchema = new Schema({
     job_title: {
         type: String,
     },
+    email: {
+        type: String,
+        unique: true,
+        required: [true, "email is required"]
+    },
     salary: {
         type: Number,
         required: [true, 'Salary is required'],

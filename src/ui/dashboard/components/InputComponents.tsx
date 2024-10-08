@@ -8,8 +8,7 @@ export const TextInput = ({ placeholder = '', ...props }: { placeholder?: string
 )
 
 export const EmailInput = ({ placeholder = "Enter email" }) => (
-    <div className="mx-auto max-w-xs space-y-2">
-        <Label htmlFor="email">Insert Email</Label>
+    <div className="w-full">
         <Input placeholder={placeholder} id="email" name="email" type="email" />
     </div>
 )

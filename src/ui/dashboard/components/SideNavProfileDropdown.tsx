@@ -22,11 +22,10 @@ import { deleteInvoice } from "@/actions/invoiceActions"
 import { RiMore2Line, RiLogoutBoxLine, RiColorFilterLine, RiSunLine, RiMoonLine, RiComputerLine } from "@remixicon/react";
 import { useState } from "react"
 import { DoubleCaret } from "@/assets/SVGComponents"
-import { signOut } from "next-auth/react"
+import { signOut } from 'next-auth/react'
 
-export default function SideNavProfileDropdown() {
+export default function SideNavProfileDropdown({ username, role }: { username: string, role: string }) {
   const [sort, setSort] = useState("alpha")
-
 
   return (
     <div className={cx("w-full md:flex items-center justify-start hidden")}>
@@ -34,8 +33,11 @@ export default function SideNavProfileDropdown() {
         <DropdownMenuTrigger asChild>
           <button className='w-full gap-4 flex items-center justify-between px-4 py-4 border-t border-t-[#e0e0e0] hover:bg-gray-100'
           >
-            <div className='w-10 h-10 rounded-full bg-slate-200 grid place-content-center'>UN</div>
-            <p className='flex-1 text-left'>User Name</p>
+            <div className='w-10 h-10 rounded-full bg-slate-200 grid place-content-center text-start'>UN</div>
+            <div className="text-start">
+              <p className='flex-1 text-left text-ellipsis whitespace-nowrap'>{username}</p>
+              <p className="text-xs text-gray-500">{role}</p>
+            </div>
 
             <DoubleCaret {...{ strokeWidth: 0.1 }} />
           </button>
@@ -76,12 +78,17 @@ export default function SideNavProfileDropdown() {
 
               </DropdownMenuSubMenuContent>
             </DropdownMenuSubMenu>
-            <DropdownMenuItem >
-              <span className="flex items-center gap-x-2">
-                <RiLogoutBoxLine className="size-4 text-inherit" />
-                <button onClick={() => signOut()}>Sign out</button>
-              </span>
-            </DropdownMenuItem>
+            <button
+              className="w-full"
+              onClick={() => signOut()}
+            >
+              <DropdownMenuItem >
+                <span className="flex items-center gap-x-2">
+                  <RiLogoutBoxLine className="size-4 text-inherit" />
+                  Sign out
+                </span>
+              </DropdownMenuItem>
+            </button>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>

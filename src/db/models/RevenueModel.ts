@@ -1,6 +1,10 @@
 import { models, Schema, model } from 'mongoose'
 
 const RevenueSchema = new Schema({
+    city: {
+        type: String,
+        required: true
+    },
     month: {
         type: String,
         required: true

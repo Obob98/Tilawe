@@ -50,7 +50,7 @@ export async function fetchRevenue(): Promise<FetchRevenueReturnType[]> {
         connectDB()
         const data: Revenue[] = await RevenueModel.find()
 
-        return data.map(({ month, revenue }) => ({ month, revenue: formatCurrency(revenue) }))
+        return data.map(({ month, revenue, city }) => ({ month, revenue: formatCurrency(revenue), city }))
     } catch (error) {
         console.error('Database Error:', error);
         throw new Error('Failed to fetch revenue data.');
@@ -172,7 +172,7 @@ export async function fetchImployees(): Promise<Employee[]> {
         connectDB()
         const data: Employee[] = await EmployeeModel.find()
 
-        return data.map(({ _id, firstname, lastname, branch_id }) => ({ _id: _id?.toString(), firstname, lastname, branch_id: branch_id.toString() }))
+        return data.map(({ _id, firstname, lastname, email, branch_id }) => ({ _id: _id?.toString(), firstname, lastname, email, branch_id: branch_id.toString() }))
     } catch (error) {
         console.error('Database Error:', error);
         throw new Error('Failed to fetch revenue data.');

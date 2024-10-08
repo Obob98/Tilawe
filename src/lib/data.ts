@@ -8,26 +8,28 @@ import RevenueModel from '../db/models/RevenueModel'
 import InvoiceModel from '../db/models/InvoiceModel'
 import ClientModel from '../db/models/ClientModel'
 import { ObjectId } from 'mongodb'
-import { InventoryModel, ProductModel } from '../db/models'
+import { BranchModel, EmployeeModel, InventoryModel, PaymentMethodModel, ProductModel, PurchasedItemsModel, PurchaseTransactionModel, SalesTransactionModel, SupplierModel } from '../db/models'
 import SalaryModel from '../db/models/SalaryModel'
 import connectDB from '../db/config/connectDB'
+import UserModel from '@/db/models/UserModel'
 
 export type FetchRevenueReturnType = {
     [K in keyof Revenue]: K extends 'revenue' ? string : Revenue[K]
 }
-export async function fetchRevenue(): Promise<FetchRevenueReturnType[]> {
+export async function fetchRevenue(): Promise<Revenue[]> {
     noStore()
 
     try {
         connectDB()
         const data: Revenue[] = await RevenueModel.find()
 
-        return data.map(({ _id, month, revenue }) => (
+        return data.map(({ _id, month, revenue, city }) => (
             {
                 _id: _id?.toString(),
                 // month: formatDateToLocal(month),
                 month,
-                revenue: formatCurrency(revenue)
+                revenue,
+                city
             }
         ))
     } catch (error) {
@@ -76,9 +78,9 @@ export async function fetchCardData() {
 
         const invoiceCountPromise = InvoiceModel.countDocuments()
 
-        const customerCountPromise = ClientModel.countDocuments()
+        const clientCountPromise = ClientModel.countDocuments()
 
-        const invoiceStatusPromise: Promise<{ paid: number, pending: number }> =
+        const invoiceStatusPromise: Promise<{ paid: number, pending: number, total: number }> =
             (async () => {
                 let paidTotal: Invoice[] | number = await InvoiceModel.find().where('status').equals('paid')
 
@@ -94,12 +96,12 @@ export async function fetchCardData() {
                     return sum + amount
                 }, 0)
 
-                return { paid: paidTotal, pending: pendingTotal }
+                return { paid: paidTotal, pending: pendingTotal, total: paidTotal + pendingTotal }
             })()
 
         const data = await Promise.all([
             invoiceCountPromise,
-            customerCountPromise,
+            clientCountPromise,
             invoiceStatusPromise,
         ])
 
@@ -107,16 +109,93 @@ export async function fetchCardData() {
         const numberOfCustomers = Number(data[1] ?? '0')
         const totalPaidInvoices = formatCurrency(data[2].paid ?? '0')
         const totalPendingInvoices = formatCurrency(data[2].pending ?? '0')
+        const total = formatCurrency(data[2].total ?? '0')
+
+        const paidPercentage = Math.floor((data[2].paid * 100) / data[2].total)
+        const pendingPercentage = Math.ceil((data[2].pending * 100) / data[2].total)
 
         return {
             numberOfCustomers,
             numberOfInvoices,
             totalPaidInvoices,
             totalPendingInvoices,
+            total,
+            paidPercentage,
+            pendingPercentage
         }
     } catch (error) {
         console.error('Database Error:', error)
         throw new Error('Failed to fetch card data.')
+    }
+}
+
+export async function fetchCities() {
+    noStore()
+
+    try {
+        connectDB()
+        const data = await BranchModel.find().distinct('city')
+
+        return data
+    } catch (error) {
+        console.error('Database Error:', error)
+        throw new Error('Failed to fetch the latest invoices.')
+    }
+}
+
+export async function fetchAdminAnalytics() {
+    noStore()
+
+    try {
+        connectDB()
+        const totalBranches = await BranchModel.find().countDocuments()
+        const totalEmployees = await EmployeeModel.find().countDocuments()
+        const totalUsers = await UserModel.find().countDocuments()
+        const paymentMethods = await PaymentMethodModel.find().countDocuments()
+
+        return {
+            totalBranches,
+            paymentMethods,
+            totalEmployees,
+            totalUsers
+        }
+    } catch (error) {
+        console.error('Database Error:', error)
+        throw new Error('Failed to fetch the latest invoices.')
+    }
+}
+
+export async function fetchShopManagerAnalytics() {
+    noStore()
+
+    try {
+        connectDB()
+        const totalInvoices = await InvoiceModel.find().countDocuments()
+        const totalSalesTransactions = await SalesTransactionModel.find().countDocuments()
+
+        return {
+            totalInvoices,
+            totalSalesTransactions
+        }
+    } catch (error) {
+        console.error('Database Error:', error)
+        throw new Error('Failed to fetch the latest invoices.')
+    }
+}
+
+export async function fetchProcurementManagerAnalytics() {
+    noStore()
+
+    try {
+        connectDB()
+
+        return {
+            totalPurchaseTransactions: 89,
+            totalInvoices: 7
+        }
+    } catch (error) {
+        console.error('Database Error:', error)
+        throw new Error('Failed to fetch the latest invoices.')
     }
 }
 
@@ -290,8 +369,6 @@ export async function fetchInvoiceById(id: string) {
         connectDB()
         const _id = new ObjectId(id)
 
-        console.log({ _id })
-
         const data = await InvoiceModel.findById(id).populate('client_id')
 
         const invoice: FetchInvoicesById = {
@@ -308,8 +385,6 @@ export async function fetchInvoiceById(id: string) {
             due_date: data.due_date.toString(),
             status: data.status,
         }
-
-        console.log({ invoice })
 
         return invoice
     } catch (error) {
@@ -331,8 +406,6 @@ export async function fetchFilteredInventory(
         await ProductModel.find()
 
         const regex = new RegExp(query, 'i')
-
-        console.log({ regex })
 
         // Build the search query with proper checks for different field types
         const inventory = await InventoryModel.aggregate([
@@ -372,8 +445,6 @@ export async function fetchFilteredInventory(
             }
         })
 
-        console.log({ formatedInventory })
-
         return deepClone(formatedInventory)
     }
     catch (error) {
@@ -381,6 +452,133 @@ export async function fetchFilteredInventory(
         throw new Error('Failed to fetch Inventory.')
     }
 }
+
+export async function fetchLatestPurchasedItems(
+    query: string,
+    currentPage: number,
+) {
+    noStore()
+
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE
+
+    try {
+        await connectDB()
+
+        const regex = new RegExp(query, 'i')
+
+        // Build the search query with proper checks for different field types
+        const purchasedItems: PurchasedItem[] = await PurchasedItemsModel.aggregate([
+            {
+                $lookup: {
+                    from: 'items',  // The name of the Client collection
+                    localField: 'item_id',
+                    foreignField: '_id',
+                    as: 'item_info'
+                }
+            },
+            { $unwind: '$item_info' },  // Unwind the client_info array
+            {
+                $addFields: {
+                    item_id: '$item_info'  // Replace client_id with the populated client_info
+                }
+            },
+            {
+                $match: {
+                    $or: [
+                        { 'item_id.name': { $regex: regex } },
+                        { 'item_id.type': { $regex: regex } },
+                        { 'item_id.price': { $regex: regex } },
+                        { quantity: { $regex: regex } }
+                    ]
+                }
+            },
+            { $sort: { quantity: -1 } },
+            { $skip: offset },
+            { $limit: ITEMS_PER_PAGE }
+        ]);
+
+        const formatedPurchasedItems = purchasedItems.map(({ _id, item_id, purchase_transaction_id, quantity, unit_price }) => {
+            return {
+                item_id,
+                purchase_transaction_id,
+                quantity,
+                unit_price,
+                _id: _id?.toString() || '',
+            }
+        })
+
+        return deepClone(formatedPurchasedItems)
+    }
+    catch (error) {
+        console.error('Database Error:', error)
+        throw new Error('Failed to fetch Inventory.')
+    }
+}
+
+// export async function fetchTopSuppliers(
+//     query: string,
+//     currentPage: number,
+// ) {
+//     noStore()
+
+//     const offset = (currentPage - 1) * ITEMS_PER_PAGE
+
+//     try {
+//         await connectDB()
+
+//         const regex = new RegExp(query, 'i')
+
+//         // Build the search query with proper checks for different field types
+//         const purchasedItems: PurchasedItem[] = await PurchasedItemsModel.aggregate([
+//             {
+//                 $lookup: {
+//                     from: 'items',  // The name of the Client collection
+//                     localField: 'item_id',
+//                     foreignField: '_id',
+//                     as: 'item_info'
+//                 }
+//             },
+//             { $unwind: '$item_info' },  // Unwind the client_info array
+//             {
+//                 $addFields: {
+//                     item_id: '$item_info'  // Replace client_id with the populated client_info
+//                 }
+//             },
+//             {
+//                 $match: {
+//                     $or: [
+//                         { 'item_id.name': { $regex: regex } },
+//                         { 'item_id.type': { $regex: regex } },
+//                         { 'item_id.price': { $regex: regex } },
+//                         { quantity: { $regex: regex } }
+//                     ]
+//                 }
+//             },
+//             { $sort: { quantity: -1 } },
+//             { $skip: offset },
+//             { $limit: ITEMS_PER_PAGE }
+//         ]);
+
+//         console.log({ purchasedItems })
+//         const formatedPurchasedItems = purchasedItems.map(({ _id, item_id, purchase_transaction_id, quantity, unit_price }) => {
+//             return {
+//                 item_id,
+//                 purchase_transaction_id,
+//                 quantity,
+//                 unit_price,
+//                 _id: _id?.toString() || '',
+//             }
+//         })
+
+//         console.log({ formatedPurchasedItems })
+
+//         return deepClone(formatedPurchasedItems)
+//     }
+//     catch (error) {
+//         console.error('Database Error:', error)
+//         throw new Error('Failed to fetch Inventory.')
+//     }
+// }
 
 export async function fetchFilteredInventoryPages(
     query: string,

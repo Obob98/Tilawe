@@ -1,5 +1,6 @@
 import NextAuth, { DefaultSession, DefaultUser } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
+import { UserRole } from './types'
 
 declare module 'next-auth' {
     interface Session {
@@ -7,7 +8,7 @@ declare module 'next-auth' {
             _id: string
             username: string
             email: string
-            role: 'admin' | 'viewer' | string
+            role: UserRole | string
         } & DefaultSession["user"]
     }
 

@@ -1,16 +1,16 @@
 
-import { getServerSession } from 'next-auth'
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation'
 
 import LoginForm from '@/ui/dashboard/components/login-form';
+import useServerSession from '@/customHooks/useServerSession';
 
 export const metadata: Metadata = {
   title: 'Login',
 };
 
 export default async function LoginPage() {
-  const session = await getServerSession()
+  const { session } = await useServerSession()
 
   if (session) {
     redirect("/dashboard")

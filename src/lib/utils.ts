@@ -1,6 +1,7 @@
-import { Revenue } from "@/types";
-// Tremor Raw cx [v0.0.0]
+import useClientSession from "@/customHooks/useClientSession";
+import { Revenue, User } from "@/types";
 
+// Tremor Raw cx [v0.0.0]
 import clsx, { type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -39,13 +40,50 @@ export const hasErrorInput = [
   "ring-red-200 ",
 ]
 
+export const formatCurrency = (amountInTambala: number) => {
+  const amountInKwacha = amountInTambala / 100
+  if (amountInKwacha <= 999) {
+    return (amountInKwacha).toLocaleString('malawi', {
+      style: 'currency',
+      currency: 'MWK',
+    })
+  }
+  else if (amountInKwacha <= 999999) {
+    const amount = (amountInKwacha / 1000).toLocaleString('malawi', {
+      style: 'currency',
+      currency: 'MWK',
+    }) + 'k'
 
-export const formatCurrency = (amount: number) => {
-  return (amount / 100).toLocaleString('malawi', {
-    style: 'currency',
-    currency: 'MWK',
-  });
-};
+    return amount
+  }
+  else {
+    const amount = (amountInKwacha / 1000000).toLocaleString('malawi', {
+      style: 'currency',
+      currency: 'MWK',
+    }) + 'm'
+
+    return amount
+  }
+
+}
+
+export const barChartFormatCurrency = (amountInTambala: number) => {
+  const amountInKwacha = amountInTambala / 100
+  if (amountInKwacha <= 999) {
+    return `MK${Intl.NumberFormat("malawi").format(amountInKwacha).toString()}m`
+  }
+  else if (amountInKwacha <= 999999) {
+    return `MK${Intl.NumberFormat("malawi").format(amountInKwacha / 1000).toString()}k`
+  }
+  else {
+    return `MK${Intl.NumberFormat("malawi").format(amountInKwacha / 1000000).toString()}m`
+  }
+
+}
+
+let valueFormatter = (number: number) =>
+  `MK${Intl.NumberFormat("malawi").format(number / 1000000).toString()}m`
+
 
 export const formatDateToLocal = (
   dateStr: string,
