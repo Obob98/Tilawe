@@ -35,7 +35,7 @@ export default function ReviewCenterTabs() {
             {
                 currentsection.length
                     ? (
-                        <Tabs defaultValue={currentsection}>
+                        <Tabs defaultValue={"Financial"}>
                             <TabsList variant="line" className="bg-white shadow-sm pt-[52px] px-8 gap-8 sticky top-0 z-40">
                                 <TabsTrigger value="Financial" className="inline-flex gap-1 group">
                                     <a href="#createUser">
